@@ -1,0 +1,24 @@
+package transaction
+
+import (
+	"github.com/stevenfrst/crowdfunding-api/drivers/repository/campaign"
+	"gorm.io/gorm"
+	"os/user"
+	"time"
+)
+
+type Transaction struct {
+	ID        uint
+	UserID uint
+	CampaignID uint
+	ShortDescription string
+	LongDescription string
+	Target int
+	AmountNow int
+	Supporters int
+	User user.User
+	Campaign campaign.Campaign
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}

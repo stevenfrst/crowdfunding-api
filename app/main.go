@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/go-playground/validator"
+	"github.com/labstack/echo-contrib/jaegertracing"
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	config2 "github.com/stevenfrst/crowdfunding-api/app/config"
 	_middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
@@ -19,6 +21,7 @@ import (
 	_transactionUseCase "github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 	_userUsecase "github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -82,7 +85,15 @@ func main() {
 
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
+	c := jaegertracing.New(e, nil)
+	defer func(c io.Closer) {
+		err := c.Close()
+		if err != nil {
 
+		}
+	}(c)
+	p := prometheus.NewPrometheus("echo", nil)
+	p.Use(e)
 	// User
 
 	userRepoInterface := _userRepo.NewUserRepository(db)
@@ -106,6 +117,7 @@ func main() {
 	}
 
 	routesInit.RouteRegister(e)
-	log.Fatal(e.Start(":1234"))
+	e.Logger.Fatal(e.Start(":1234"))
+
 
 }

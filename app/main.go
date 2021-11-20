@@ -1,16 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	config2 "github.com/stevenfrst/crowdfunding-api/app/config"
 	_middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
 	routes "github.com/stevenfrst/crowdfunding-api/app/routes"
+	_campaignDelivery "github.com/stevenfrst/crowdfunding-api/delivery/campaign"
 	userDelivery "github.com/stevenfrst/crowdfunding-api/delivery/users"
 	"github.com/stevenfrst/crowdfunding-api/drivers/mysql"
 	repoModels "github.com/stevenfrst/crowdfunding-api/drivers/repository"
+	_campaignRepo "github.com/stevenfrst/crowdfunding-api/drivers/repository/campaign"
 	_userRepo "github.com/stevenfrst/crowdfunding-api/drivers/repository/users"
+	_campaignUseCase "github.com/stevenfrst/crowdfunding-api/usecase/campaign"
 	_userUsecase "github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
 	"log"
@@ -48,7 +50,7 @@ func dbMigrate(db *gorm.DB) {
 }
 
 func main() {
-	fmt.Println("Hello")
+	//fmt.Println("Hello")
 	config := config2.GetConfig()
 	configdb := mysql.ConfigDB{
 		DB_Username: config.DB_USERNAME,
@@ -68,12 +70,21 @@ func main() {
 
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
+
+	// User
+
 	userRepoInterface := _userRepo.NewUserRepository(db)
 	userUseCaseInterface := _userUsecase.NewUsecase(userRepoInterface, timeoutContext)
-	userControllerInterface := userDelivery.NewUserDelivery(userUseCaseInterface)
+	userDeliveryInterface := userDelivery.NewUserDelivery(userUseCaseInterface)
+
+	// Campaign
+	CampaignRepoInterface := _campaignRepo.NewCampaignRepository(db)
+	campaignUseCaseInterface := _campaignUseCase.NewCampaignUseCase(CampaignRepoInterface)
+	campaignDeliveryInterface := _campaignDelivery.NewCampaignDelivery(campaignUseCaseInterface)
 
 	routesInit := routes.RouteControllerList{
-		UserDelivery: *userControllerInterface,
+		UserDelivery: *userDeliveryInterface,
+		CampaignDelivery: *campaignDeliveryInterface,
 		JWTConfig:      jwt.Init(),
 	}
 

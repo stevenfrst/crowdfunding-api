@@ -11,6 +11,16 @@ type UserResponse struct {
 	RoleID int `json:"role"`
 }
 
+type UserResponseWCampaign struct {
+	Id int `json:"id"`
+	FullName string `json:"fullname"`
+	Job string `json:"job"`
+	Email string `json:"email"`
+	Password string `json:"password"`
+	RoleID int `json:"role"`
+	Campaign interface{} `json:"campaign"`
+}
+
 func FromDomain(domain users.Domain) UserResponse {
 	return UserResponse {
 		Id:       int(domain.ID),

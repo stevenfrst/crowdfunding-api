@@ -4,12 +4,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	campaignDelivery "github.com/stevenfrst/crowdfunding-api/delivery/campaign"
+	transactionDelivery "github.com/stevenfrst/crowdfunding-api/delivery/transaction"
 	userDelivery "github.com/stevenfrst/crowdfunding-api/delivery/users"
 )
 
 type RouteControllerList struct {
 	UserDelivery userDelivery.UserDelivery
 	CampaignDelivery campaignDelivery.CampaignDelivery
+	TransactionDelivery transactionDelivery.TransactionDelivery
 	JWTConfig      middleware.JWTConfig
 }
 
@@ -23,5 +25,9 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 
 	c.GET("/v1/user/:id/campaign",d.CampaignDelivery.GetAllCampaignByUserID)
 	c.GET("/v1/user/campaign",d.CampaignDelivery.GetAllCampaignDetail)
+
+	c.POST("/v1/create-transaction",d.TransactionDelivery.CreateTransaction)
+	c.POST("/v1/payments/notification",d.TransactionDelivery.GetNotificationPayment)
+
 
 }

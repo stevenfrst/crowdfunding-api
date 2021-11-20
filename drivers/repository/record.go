@@ -2,6 +2,7 @@ package repoModels
 
 import (
 	"github.com/stevenfrst/crowdfunding-api/usecase/campaign"
+	"github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
 	"time"
@@ -98,9 +99,9 @@ type Campaign struct {
 	Target int `json:"target"`
 	AmountNow int `json:"amount_now"`
 	Supporters int `json:"supporters"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *gorm.DeletedAt `gorm:"index"`
 }
 
 func FromDomainCampaign(domain *campaign.Domain) *Campaign {
@@ -144,7 +145,36 @@ type Transaction struct {
 	TransactionStatus string
 	FraudStatus string
 	PaymentType string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *gorm.DeletedAt `gorm:"index"`
+}
+
+
+func FromDomainTransaction(domain *transaction.Domain) Transaction {
+	return Transaction {
+		ID:domain.ID,
+		CampaignID:domain.CampaignID,
+		UserID: domain.UserID,
+		PaymentLink: domain.PaymentLink,
+		Nominal: domain.Nominal,
+		Status:domain.Status,
+		TransactionStatus: domain.TransactionStatus,
+		FraudStatus: domain.FraudStatus,
+		PaymentType: domain.PaymentType,
+	}
+}
+
+func (t Transaction) ToDomain() transaction.Domain {
+	return transaction.Domain{
+		ID:t.ID,
+		CampaignID:t.CampaignID,
+		UserID: t.UserID,
+		PaymentLink: t.PaymentLink,
+		Nominal: t.Nominal,
+		Status:t.Status,
+		TransactionStatus: t.TransactionStatus,
+		FraudStatus: t.FraudStatus,
+		PaymentType: t.PaymentType,
+	}
 }

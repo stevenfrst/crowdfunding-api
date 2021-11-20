@@ -7,12 +7,16 @@ import (
 	_middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
 	routes "github.com/stevenfrst/crowdfunding-api/app/routes"
 	_campaignDelivery "github.com/stevenfrst/crowdfunding-api/delivery/campaign"
+	_transactionDelivery "github.com/stevenfrst/crowdfunding-api/delivery/transaction"
 	userDelivery "github.com/stevenfrst/crowdfunding-api/delivery/users"
+	payment "github.com/stevenfrst/crowdfunding-api/drivers/midtrans"
 	"github.com/stevenfrst/crowdfunding-api/drivers/mysql"
 	repoModels "github.com/stevenfrst/crowdfunding-api/drivers/repository"
 	_campaignRepo "github.com/stevenfrst/crowdfunding-api/drivers/repository/campaign"
+	_transactionRepo "github.com/stevenfrst/crowdfunding-api/drivers/repository/transaction"
 	_userRepo "github.com/stevenfrst/crowdfunding-api/drivers/repository/users"
 	_campaignUseCase "github.com/stevenfrst/crowdfunding-api/usecase/campaign"
+	_transactionUseCase "github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 	_userUsecase "github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
 	"log"
@@ -52,6 +56,14 @@ func dbMigrate(db *gorm.DB) {
 func main() {
 	//fmt.Println("Hello")
 	config := config2.GetConfig()
+
+	configPayment := payment.ConfigMidtrans{
+		SERVER_KEY: config.SERVER_KEY,
+	}
+
+	configPayment.SetupGlobalMidtransConfig()
+	payment.InitializeSnapClient()
+
 	configdb := mysql.ConfigDB{
 		DB_Username: config.DB_USERNAME,
 		DB_Password: config.DB_PASSWORD,
@@ -82,9 +94,14 @@ func main() {
 	campaignUseCaseInterface := _campaignUseCase.NewCampaignUseCase(CampaignRepoInterface)
 	campaignDeliveryInterface := _campaignDelivery.NewCampaignDelivery(campaignUseCaseInterface)
 
+	TransactionRepoInterface := _transactionRepo.NewTransactionRepository(db)
+	transactionUseCaseInterface := _transactionUseCase.NewUsecase(TransactionRepoInterface,CampaignRepoInterface,configPayment)
+	transactionDeliveryInterface := _transactionDelivery.NewTransactionDelivery(transactionUseCaseInterface)
+
 	routesInit := routes.RouteControllerList{
 		UserDelivery: *userDeliveryInterface,
 		CampaignDelivery: *campaignDeliveryInterface,
+		TransactionDelivery: *transactionDeliveryInterface,
 		JWTConfig:      jwt.Init(),
 	}
 

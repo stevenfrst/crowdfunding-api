@@ -15,6 +15,7 @@ type Configuration struct {
 	JWT_EXPIRED int
 	CONTEXT_TIMEOUT int
 	SERVER_ADDR string
+	SERVER_KEY string
 }
 
 func GetConfig() Configuration {

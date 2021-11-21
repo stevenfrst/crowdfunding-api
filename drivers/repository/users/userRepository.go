@@ -61,3 +61,13 @@ func (r UserRepository) GetAllUser() ([]users.Domain,error) {
 	return repoModels.ConvertRepoUseCaseUserList(users),nil
 }
 
+func (r UserRepository) DeleteUserByID(id int) (int,error) {
+	var user repoModels.User
+	result := r.db.Where("id = ? AND role_id = ?",id,2).Delete(&user)
+	if result.Error != nil {
+		return int(result.RowsAffected),result.Error
+	}
+	return int(result.RowsAffected),nil
+
+}
+

@@ -51,3 +51,11 @@ func (u UserUseCase) GetAll() ([]Domain,error) {
 	}
 	return resp,nil
 }
+
+func (u UserUseCase) DeleteByID(id int) (string,error) {
+	resp,err := u.repo.DeleteUserByID(id)
+	if resp == 0 {
+		return "Failed",err
+	}
+	return "Success",err
+}

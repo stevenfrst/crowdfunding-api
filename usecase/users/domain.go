@@ -25,10 +25,12 @@ type UserUsecaseInterface interface {
 	LoginUseCase(username,password string,ctx context.Context) (Domain,error)
 	RegisterUseCase(user Domain,ctx context.Context) (Domain,error)
 	GetAll() ([]Domain,error)
+	DeleteByID(id int) (string,error)
 }
 
 type UserRepoInterface interface {
 	CheckLogin(email,password string,ctx context.Context) (Domain, error)
 	Register(user *Domain,ctx context.Context) (Domain,error)
 	GetAllUser() ([]Domain,error)
+	DeleteUserByID(id int) (int,error)
 }

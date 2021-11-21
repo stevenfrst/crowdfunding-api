@@ -29,6 +29,7 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	c.GET("/v1/user/:id/campaign",d.CampaignDelivery.GetAllCampaignByUserID)
 	c.GET("/v1/user/campaign",d.CampaignDelivery.GetAllCampaignDetail,jwt)
 	c.GET("/v1/user/all",d.UserDelivery.GetAll)
+	c.DELETE("/v1/user/:id",d.UserDelivery.DeletaByID)
 
 	c.POST("/v1/payments/create",d.TransactionDelivery.CreateTransaction)
 	c.POST("/v1/payments/notification",d.TransactionDelivery.GetNotificationPayment)

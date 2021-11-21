@@ -7,6 +7,7 @@ import (
 	"github.com/stevenfrst/crowdfunding-api/delivery/users/response"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"net/http"
+	"strconv"
 )
 
 type UserDelivery struct {
@@ -59,4 +60,15 @@ func (d *UserDelivery) GetAll(c echo.Context) error {
 		return delivery.ErrorResponse(c,http.StatusInternalServerError,"Failed",err)
 	}
 	return delivery.SuccessResponse(c,response.FromDomainList(res))
+}
+
+
+func (d *UserDelivery) DeletaByID(c echo.Context) error {
+	idParam := c.Param("id")
+	id,_ := strconv.Atoi(idParam)
+	res,err := d.usecase.DeleteByID(id)
+	if res == "Failed" {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,res,err)
+	}
+	return delivery.SuccessResponse(c,res)
 }

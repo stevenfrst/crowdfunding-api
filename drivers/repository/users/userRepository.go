@@ -6,6 +6,7 @@ import (
 	"github.com/stevenfrst/crowdfunding-api/helper/encrypt"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
+	"log"
 )
 
 type UserRepository struct {
@@ -25,7 +26,6 @@ func (r *UserRepository) CheckLogin(email,password string,ctx context.Context) (
 	if err != nil {
 		return users.Domain{},err
 	}
-
 	err = encrypt.CheckPassword(password,user.Password)
 	if err != nil {
 		return users.Domain{},err
@@ -71,3 +71,24 @@ func (r UserRepository) DeleteUserByID(id int) (int,error) {
 
 }
 
+
+func (r UserRepository) UpdateUserPassword(update users.DomainUpdate,ctx context.Context) (string, error) {
+	user,err := r.CheckLogin(update.Email,update.OldPassword,ctx)
+	if err != nil {
+		return "failed",err
+	}
+
+	hashedPassword,err := encrypt.Hash(update.NewPassword)
+	log.Println("errdisni1")
+	if err != nil {
+		return "failed",err
+	}
+	user.Password = hashedPassword
+	log.Println("errdisni2")
+
+	err = r.db.Save(repoModels.FromDomainUser(&user)).Error
+	if err != nil {
+		return "failed",err
+	}
+	return "Success",err
+}

@@ -72,3 +72,22 @@ func (d *UserDelivery) DeletaByID(c echo.Context) error {
 	}
 	return delivery.SuccessResponse(c,res)
 }
+
+func (d *UserDelivery) UpdatePassword(c echo.Context) error {
+	var user request.PasswordUpdate
+	ctx := c.Request().Context()
+	err := c.Bind(&user)
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,"Failed to Bind Data",err)
+	}
+	err = c.Validate(&user)
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusBadRequest,"Failed, Wrong Input",err)
+	}
+	resp,err := d.usecase.UpdatePassword(user.ToDomain(),ctx)
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,resp,err)
+	}
+	return delivery.SuccessResponse(c,resp)
+
+}

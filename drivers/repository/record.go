@@ -18,9 +18,9 @@ type User struct {
 	Campaigns []Campaign
 	Transaction []Transaction
 	Token string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *gorm.DeletedAt `gorm:"index"`
 }
 
 func ConvertRepoUseCaseUserList(repo []User) (domain []users.Domain) {

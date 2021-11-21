@@ -59,3 +59,8 @@ func (u UserUseCase) DeleteByID(id int) (string,error) {
 	}
 	return "Success",err
 }
+
+func (u *UserUseCase) UpdatePassword(domain DomainUpdate,ctx context.Context) (string,error) {
+	resp,err := u.repo.UpdateUserPassword(domain,ctx)
+	return resp,err
+}

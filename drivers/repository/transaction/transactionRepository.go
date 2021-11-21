@@ -19,6 +19,7 @@ func NewTransactionRepository(gormDb *gorm.DB) transaction.TransactionRepoInterf
 func (t TransactionRepository) GetByID(ID int) (transaction.Domain,error) {
 	var transaction repoModels.Transaction
 	err := t.db.Where("id = ?",ID).Find(&transaction).Error
+	//log.Println("REPO",transaction)
 	if err != nil {
 		return transaction.ToDomain(),err
 	}
@@ -58,5 +59,6 @@ func (t TransactionRepository) CreateTransaction(transaksi *transaction.Domain) 
 	}
 	return *transaksi,nil
 }
+
 
 

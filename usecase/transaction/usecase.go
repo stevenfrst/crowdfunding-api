@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"errors"
 	payment "github.com/stevenfrst/crowdfunding-api/drivers/midtrans"
 	"github.com/stevenfrst/crowdfunding-api/usecase/campaign"
 	"strconv"
@@ -37,6 +38,18 @@ func (t TransactionUseCase) CreateTransaction(campaignID,userID,Nominal int) (Do
 	}
 
 	return transactionReturned,nil
+}
+
+func (t TransactionUseCase) GetStatusByID(ID int) (Domain,error) {
+	transaction,err := t.repoTransaction.GetByID(ID)
+	//log.Println(transaction)
+	if err != nil  {
+		return Domain{},err
+	} else if transaction.ID == 0 {
+		return Domain{},errors.New("Not Found")
+	}
+
+	return transaction,nil
 }
 
 func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Domain,error) {

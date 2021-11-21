@@ -9,6 +9,7 @@ type UserResponse struct {
 	Email string `json:"email" validate:"required,email"`
 	Password string `json:"password"`
 	RoleID int `json:"role"`
+	Token string `json:"token"`
 }
 
 type UserResponseWCampaign struct {
@@ -29,5 +30,22 @@ func FromDomain(domain users.Domain) UserResponse {
 		Email:    domain.Email,
 		Password: domain.Password,
 		RoleID: int(domain.RoleID),
+		Token: domain.Token,
 	}
+}
+
+func FromDomainList(domain []users.Domain) (response []UserResponse) {
+	for _,user := range domain {
+		newUser := UserResponse{
+			Id:       int(user.ID),
+			FullName: user.FullName,
+			Job:      user.Job,
+			Email:    user.Email,
+			Password: user.Password,
+			RoleID: int(user.RoleID),
+			Token: user.Token,
+		}
+		response = append(response,newUser)
+	}
+	return response
 }

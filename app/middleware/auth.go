@@ -1,17 +1,15 @@
-package middleware
+package middlewares
 
 import (
-	"github.com/stevenfrst/crowdfunding-api/delivery"
-	"net/http"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 type JwtCustomClaims struct {
-	UserId uint `json:"id"`
+	UserId int /*`json:"userId"`*/
 	jwt.StandardClaims
 }
 
@@ -21,26 +19,23 @@ type ConfigJWT struct {
 }
 
 func (jwtConf *ConfigJWT) Init() middleware.JWTConfig {
+	log.Println(jwtConf.SecretJWT)
+	log.Println("TEEEEE")
 	return middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(jwtConf.SecretJWT),
-		ErrorHandlerWithContext: middleware.JWTErrorHandlerWithContext(func(e error, c echo.Context) error {
-			return delivery.ErrorResponse(c, http.StatusForbidden, e.Error(), e)
-		}),
 	}
 }
 
-func (configJwt ConfigJWT) GenererateToken(userId uint) string {
+func (jwtConf *ConfigJWT) GenerateTokenJWT(UserId int) (string, error) {
 	claims := JwtCustomClaims{
-		userId,
+		UserId,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(int64(configJwt.ExpiresDuration))).Unix(),
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(int64(jwtConf.ExpiresDuration))).Unix(),
 		},
 	}
 
-	// Create token with claims
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, _ := t.SignedString([]byte(configJwt.SecretJWT))
-
-	return token
+	token, err := t.SignedString([]byte(jwtConf.SecretJWT))
+	return token, err
 }

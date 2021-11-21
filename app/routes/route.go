@@ -17,17 +17,22 @@ type RouteControllerList struct {
 
 
 func (d RouteControllerList) RouteRegister(c *echo.Echo) {
+	jwt := middleware.JWTWithConfig(d.JWTConfig)
+
 	c.POST("/v1/login",d.UserDelivery.Login)
 	c.POST("/v1/register",d.UserDelivery.Register)
+
 
 	c.POST("/v1/campaign",d.CampaignDelivery.CreateCampaignHandler)
 	c.GET("/v1/campaign/:id",d.CampaignDelivery.GetCampaignByID)
 
 	c.GET("/v1/user/:id/campaign",d.CampaignDelivery.GetAllCampaignByUserID)
-	c.GET("/v1/user/campaign",d.CampaignDelivery.GetAllCampaignDetail)
+	c.GET("/v1/user/campaign",d.CampaignDelivery.GetAllCampaignDetail,jwt)
+	c.GET("/v1/user/all",d.UserDelivery.GetAll)
 
-	c.POST("/v1/create-transaction",d.TransactionDelivery.CreateTransaction)
+	c.POST("/v1/payments/create",d.TransactionDelivery.CreateTransaction)
 	c.POST("/v1/payments/notification",d.TransactionDelivery.GetNotificationPayment)
+	c.GET("/v1/payments/:id",d.TransactionDelivery.GetStatusByID)
 
 
 }

@@ -76,6 +76,7 @@ func main() {
 	}
 	db := configdb.InitialDb()
 	dbMigrate(db)
+
 	jwt := _middleware.ConfigJWT{
 		SecretJWT:       config.JWT_SECRET,
 		ExpiresDuration: config.JWT_EXPIRED,
@@ -97,7 +98,7 @@ func main() {
 	// User
 
 	userRepoInterface := _userRepo.NewUserRepository(db)
-	userUseCaseInterface := _userUsecase.NewUsecase(userRepoInterface, timeoutContext)
+	userUseCaseInterface := _userUsecase.NewUsecase(userRepoInterface,&jwt, timeoutContext)
 	userDeliveryInterface := userDelivery.NewUserDelivery(userUseCaseInterface)
 
 	// Campaign

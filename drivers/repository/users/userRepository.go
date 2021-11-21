@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-	"errors"
 	"github.com/stevenfrst/crowdfunding-api/drivers/repository"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
@@ -20,19 +19,15 @@ func NewUserRepository(gormDb *gorm.DB) users.UserRepoInterface {
 	}
 }
 
-func (r *UserRepository) CheckLogin(email,password string,ctx context.Context) (bool, error) {
+func (r *UserRepository) CheckLogin(email,password string,ctx context.Context) (users.Domain, error) {
 	var user repoModels.User
 
-	result := r.db.Where("email = ?", email,"password = ?",password).First(&user)
-	if result.Error != nil {
-		return false,result.Error
+	err := r.db.Where("email = ?", email,"password = ?",password).First(&user).Error
+	log.Println(err)
+	if err != nil {
+		return users.Domain{},err
 	}
-	if result.RowsAffected == 1 {
-		return true,nil
-	}
-	//log.Println(user,reflect.TypeOf(user))
-
-	return false,errors.New("user not found")
+	return user.ToDomain(),nil
 }
 
 func (r *UserRepository) Register(user *users.Domain,ctx context.Context) (users.Domain,error) {
@@ -44,5 +39,14 @@ func (r *UserRepository) Register(user *users.Domain,ctx context.Context) (users
 	}
 	//var out repoModels.User
 	return *user,nil
+}
+
+func (r UserRepository) GetAllUser() ([]users.Domain,error) {
+	var users []repoModels.User
+	err := r.db.Find(&users).Error
+	if err != nil {
+		return repoModels.ConvertRepoUseCaseUserList(users),err
+	}
+	return repoModels.ConvertRepoUseCaseUserList(users),nil
 }
 

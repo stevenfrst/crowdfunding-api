@@ -33,6 +33,18 @@ func (t *TransactionDelivery) CreateTransaction(c echo.Context) error {
 
 }
 
+func (t TransactionDelivery) GetStatusByID(c echo.Context) error {
+	id,err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusBadRequest,"Failed",err)
+	}
+	resp,err := t.usecase.GetStatusByID(id)
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,"Failed",err)
+	}
+	return delivery.SuccessResponse(c,response.FromDomain(resp))
+
+}
 
 func (t TransactionDelivery) GetNotificationPayment(c echo.Context) error {
 	var input request.TransactionNotification

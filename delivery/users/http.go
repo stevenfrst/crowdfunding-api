@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/stevenfrst/crowdfunding-api/delivery"
 	"github.com/stevenfrst/crowdfunding-api/delivery/users/request"
+	"github.com/stevenfrst/crowdfunding-api/delivery/users/response"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"net/http"
 )
@@ -49,6 +50,13 @@ func (d *UserDelivery) Login(c echo.Context) error {
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
 	}
 
-	return delivery.SuccessResponse(c,res)
+	return delivery.SuccessResponse(c,response.FromDomain(res))
+}
 
+func (d *UserDelivery) GetAll(c echo.Context) error {
+	res,err := d.usecase.GetAll()
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusInternalServerError,"Failed",err)
+	}
+	return delivery.SuccessResponse(c,response.FromDomainList(res))
 }

@@ -23,6 +23,22 @@ type User struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
+func ConvertRepoUseCaseUserList(repo []User) (domain []users.Domain) {
+	for _,user := range repo {
+		newdomain := users.Domain{
+			ID:user.ID,
+			FullName:user.FullName,
+			Email:user.Email,
+			Password:user.Password,
+			Job:user.Job,
+			RoleID:user.RoleID,
+		}
+		domain = append(domain,newdomain)
+	}
+	return domain
+}
+
+
 func ConvertRepoUseCaseUserCampaign(repo []User) (domain []campaign.Users) {
 	for _,x := range repo {
 		newDomain := campaign.Users{
@@ -66,7 +82,7 @@ func FromDomainUser(domain *users.Domain) *User {
 	}
 }
 
-func (u User) ToDomain() users.Domain {
+func (u *User) ToDomain() users.Domain {
 	return users.Domain{
 		ID:      u.ID,
 		FullName: u.FullName,
@@ -74,6 +90,7 @@ func (u User) ToDomain() users.Domain {
 		Email:    u.Email,
 		Password: u.Password,
 		RoleID: u.RoleID,
+		Token:u.Token,
 	}
 }
 

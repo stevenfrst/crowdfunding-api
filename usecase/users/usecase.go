@@ -2,6 +2,8 @@ package users
 
 import (
 	"context"
+	"log"
+	"reflect"
 	"time"
 )
 import _middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
@@ -12,17 +14,25 @@ type UserUseCase struct {
 	jwt  *_middleware.ConfigJWT
 }
 
-func NewUsecase(userRepo UserRepoInterface, contextTimeout time.Duration) UserUsecaseInterface {
+func NewUsecase(userRepo UserRepoInterface,configJWT *_middleware.ConfigJWT, contextTimeout time.Duration) UserUsecaseInterface {
 	return &UserUseCase{
 		repo: userRepo,
 		ctx:  contextTimeout,
-		//jwt:  configJWT,
+		jwt:  configJWT,
 	}
 }
 
 
-func (u UserUseCase) LoginUseCase(username,password string,ctx context.Context) (bool,error) {
-	return u.repo.CheckLogin(username,password,ctx)
+func (u UserUseCase) LoginUseCase(username,password string,ctx context.Context) (Domain,error) {
+
+	user ,err := u.repo.CheckLogin(username,password,ctx)
+	log.Println(reflect.TypeOf(user),user.Token)
+	if err != nil {
+		return user,err
+	}
+	token,err := u.jwt.GenerateTokenJWT(int(user.ID))
+	user.Token = token
+	return user,err
 }
 
 
@@ -33,3 +43,11 @@ func (u UserUseCase) RegisterUseCase(user Domain,ctx context.Context) (Domain,er
 	return resp,err
 }
 
+
+func (u UserUseCase) GetAll() ([]Domain,error) {
+	resp,err := u.repo.GetAllUser()
+	if err != nil {
+		return []Domain{},err
+	}
+	return resp,nil
+}

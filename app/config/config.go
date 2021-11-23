@@ -15,6 +15,12 @@ type Configuration struct {
 	JWT_EXPIRED int
 	CONTEXT_TIMEOUT int
 	SERVER_ADDR string
+	SERVER_KEY string
+	CONFIG_SMTP_HOST string
+	CONFIG_SMTP_PORT int
+	CONFIG_SMTP_AUTH_EMAIL string
+	CONFIG_AUTH_PASSWORD string
+	CONFIG_SENDER_NAME string
 }
 
 func GetConfig() Configuration {

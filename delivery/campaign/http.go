@@ -91,3 +91,14 @@ func (u CampaignDelivery) GetAllCampaignByUserID(c echo.Context) (err error) {
 
 	return delivery.SuccessResponse(c,response.FromDomainCampaignUser(resp))
 }
+
+func (u CampaignDelivery) EditCampaignTargetByID(c echo.Context) (err error) {
+	id,_ := strconv.Atoi(c.FormValue("id"))
+	target,_ := strconv.Atoi(c.FormValue("target"))
+
+	resp,err := u.usecase.EditTargetCampaign(id,target)
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusBadRequest,"Failed",err)
+	}
+	return delivery.SuccessResponse(c,response.FromDomainCampaign(resp))
+}

@@ -50,8 +50,7 @@ func (c CampaignRepository) FindByID(ID int) (campaign.Domain,error) {
 	return campaignQuery.ToDomain(), nil
 }
 
-//
-//
+
 func (c CampaignRepository) ListCampaignsByUserID(id int) (campaign.UserCampaign,error) {
 	var usersQuery repoModels.User
 	err := c.db.Preload("Campaigns").Where("id = ?",id).Find(&usersQuery).Error
@@ -63,12 +62,13 @@ func (c CampaignRepository) ListCampaignsByUserID(id int) (campaign.UserCampaign
 }
 
 
-func (c CampaignRepository) UpdateCampaign(campaign campaign.Domain) (campaign.Domain,error) {
+func (c CampaignRepository) UpdateCampaign(campaignInput campaign.Domain) (campaign.Domain,error) {
+	campaign := repoModels.FromDomainCampaign(&campaignInput)
 	err := c.db.Save(&campaign).Error
 	if err != nil {
-		return campaign,err
+		return campaign.ToDomain(),err
 	}
-	return campaign,nil
+	return campaign.ToDomain(),nil
 }
 
 func (c CampaignRepository) ListAllCampaignByUser() []campaign.Users {
@@ -78,5 +78,16 @@ func (c CampaignRepository) ListAllCampaignByUser() []campaign.Users {
 	return repoModels.ConvertRepoUseCaseUserCampaign(users)
 }
 
-
-
+func (c CampaignRepository) EditTargetCampaign(id,target int) (campaign.Domain,error) {
+	campaignIn, err := c.FindOneCampaignByID(id)
+	if err != nil {
+		return campaign.Domain{},err
+	}
+	campaignIn.Target = target
+	campaignRepo := repoModels.FromDomainCampaign(&campaignIn)
+	err = c.db.Save(&campaignRepo).Error
+	if err != nil {
+		return campaign.Domain{},err
+	}
+	return campaignRepo.ToDomain(),nil
+}

@@ -54,6 +54,7 @@ type CampaignUsecaseInterface interface {
 	GetByIDUseCase(id int) (Domain,error)
 	GetAllCampaignDetail() ([]Users,error)
 	ListAllCampaignByUserUseCase(id int) (UserCampaign, error)
+	EditTargetCampaign(id,target int) (Domain,error)
 }
 
 type CampaignRepoInterface interface {
@@ -63,5 +64,5 @@ type CampaignRepoInterface interface {
 	ListCampaignsByUserID(id int) (UserCampaign,error)
 	UpdateCampaign(campaign Domain) (Domain,error)
 	ListAllCampaignByUser() (users []Users)
-
+	EditTargetCampaign(id,target int) (Domain,error)
 }

@@ -44,3 +44,12 @@ func (u CampaignUseCase) ListAllCampaignByUserUseCase(id int) (UserCampaign, err
 	}
 	return resp, nil
 }
+
+func (u CampaignUseCase) EditTargetCampaign(id,target int) (Domain,error) {
+	resp,err := u.CampaignRepository.EditTargetCampaign(id,target)
+	if err != nil {
+		return Domain{},err
+	}
+
+	return resp,nil
+}

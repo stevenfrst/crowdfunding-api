@@ -64,3 +64,11 @@ func (u *UserUseCase) UpdatePassword(domain DomainUpdate,ctx context.Context) (s
 	resp,err := u.repo.UpdateUserPassword(domain,ctx)
 	return resp,err
 }
+
+func (u *UserUseCase) GetUserTransactionByID(id int) (DomainTransaction,error) {
+	resp,err := u.repo.GetUserTransaction(id)
+	if err != nil {
+		return DomainTransaction{},err
+	}
+	return resp,nil
+}

@@ -19,6 +19,20 @@ type DomainNotification struct {
 	FraudStatus       string
 }
 
+type Email struct {
+	Sender string
+	ToEmail string
+	Subject string
+	Reward string
+	Nominal string
+}
+
+type BodyEmail struct {
+	TransactionStatus string
+	OrderID string
+	Reward string
+}
+
 type TransactionUsecaseInterface interface {
 	CreateTransaction(campaignID,userID,Nominal int) (Domain,error)
 	GetNotificationPayment(input DomainNotification) (Domain,error)

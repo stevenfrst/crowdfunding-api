@@ -92,3 +92,21 @@ func (r UserRepository) UpdateUserPassword(update users.DomainUpdate,ctx context
 	}
 	return "Success",err
 }
+
+func(r UserRepository) GetUserTransaction(id int) (users.DomainTransaction,error) {
+	var user repoModels.User
+	err := r.db.Preload("Transaction").Where("id = ?",id).Find(&user).Error
+	if err != nil {
+		return users.DomainTransaction{},nil
+	}
+	return user.ToDomainUserTransaction(),nil
+}
+
+func (r UserRepository) GetEmailByID(id int) (string,error) {
+	var user repoModels.User
+	err := r.db.Where("id = ?",id).Find(&user).Error
+	if err != nil {
+		return "ID not found",err
+	}
+	return user.Email,nil
+}

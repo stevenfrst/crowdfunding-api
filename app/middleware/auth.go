@@ -20,7 +20,6 @@ type ConfigJWT struct {
 
 func (jwtConf *ConfigJWT) Init() middleware.JWTConfig {
 	log.Println(jwtConf.SecretJWT)
-	log.Println("TEEEEE")
 	return middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(jwtConf.SecretJWT),

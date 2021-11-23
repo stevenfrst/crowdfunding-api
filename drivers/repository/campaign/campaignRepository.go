@@ -78,5 +78,16 @@ func (c CampaignRepository) ListAllCampaignByUser() []campaign.Users {
 	return repoModels.ConvertRepoUseCaseUserCampaign(users)
 }
 
-
-
+func (c CampaignRepository) EditTargetCampaign(id,target int) (campaign.Domain,error) {
+	campaignIn, err := c.FindOneCampaignByID(id)
+	if err != nil {
+		return campaign.Domain{},err
+	}
+	campaignIn.Target = target
+	campaignRepo := repoModels.FromDomainCampaign(&campaignIn)
+	err = c.db.Save(&campaignRepo).Error
+	if err != nil {
+		return campaign.Domain{},err
+	}
+	return campaignRepo.ToDomain(),nil
+}

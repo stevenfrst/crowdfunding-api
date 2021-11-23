@@ -1,6 +1,8 @@
 package	response
 
-import "github.com/stevenfrst/crowdfunding-api/usecase/users"
+import (
+	"github.com/stevenfrst/crowdfunding-api/usecase/users"
+)
 
 type UserResponse struct {
 	Id int `json:"id"`
@@ -22,6 +24,14 @@ type UserResponseWCampaign struct {
 	Campaign interface{} `json:"campaign"`
 }
 
+type UserResponseWTransaction struct {
+	ID        uint `json:"id"`
+	FullName string `json:"full_name"`
+	Email string `json:"email"`
+	Job    string `json:"job"`
+	Transaction interface{} `json:"transaction"`
+}
+
 func FromDomain(domain users.Domain) UserResponse {
 	return UserResponse {
 		Id:       int(domain.ID),
@@ -31,6 +41,16 @@ func FromDomain(domain users.Domain) UserResponse {
 		Password: domain.Password,
 		RoleID: int(domain.RoleID),
 		Token: domain.Token,
+	}
+}
+
+func FromDomainUserTransaction(domain users.DomainTransaction) UserResponseWTransaction {
+	return UserResponseWTransaction{
+		ID:       domain.ID,
+		FullName: domain.FullName,
+		Job:      domain.Job,
+		Email:    domain.Email,
+		Transaction: domain.Transaction,
 	}
 }
 

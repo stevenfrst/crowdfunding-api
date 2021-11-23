@@ -25,7 +25,7 @@ func (config ConfigMidtrans) SetupGlobalMidtransConfig() {
 func (config ConfigMidtrans) GenerateSnapReq(id,nominal int) *snap.Request {
 	snapReq := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  fmt.Sprintf("%v",id+1),
+			OrderID:  fmt.Sprintf("%v",id),
 			GrossAmt: int64(nominal),
 		},
 		EnabledPayments: snap.AllSnapPaymentType,

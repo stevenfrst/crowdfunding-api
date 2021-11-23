@@ -27,12 +27,27 @@ type DomainUpdate struct {
 	NewPassword string
 }
 
+type DomainTransaction struct {
+	ID        uint
+	FullName string
+	Email string
+	Password string
+	Job    string
+	RoleID uint
+	Token string
+	Transaction interface{}
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
 type UserUsecaseInterface interface {
 	LoginUseCase(username,password string,ctx context.Context) (Domain,error)
 	RegisterUseCase(user Domain,ctx context.Context) (Domain,error)
 	GetAll() ([]Domain,error)
 	DeleteByID(id int) (string,error)
 	UpdatePassword(domain DomainUpdate,ctx context.Context) (string,error)
+	GetUserTransactionByID(id int) (DomainTransaction,error)
 }
 
 type UserRepoInterface interface {
@@ -41,4 +56,6 @@ type UserRepoInterface interface {
 	GetAllUser() ([]Domain,error)
 	DeleteUserByID(id int) (int,error)
 	UpdateUserPassword(update DomainUpdate,ctx context.Context) (string, error)
+	GetUserTransaction(id int) (DomainTransaction,error)
+	GetEmailByID(id int) (string,error)
 }

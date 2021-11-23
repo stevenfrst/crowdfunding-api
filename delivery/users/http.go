@@ -1,11 +1,14 @@
 package delivery
 
 import (
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	middlewares "github.com/stevenfrst/crowdfunding-api/app/middleware"
 	"github.com/stevenfrst/crowdfunding-api/delivery"
 	"github.com/stevenfrst/crowdfunding-api/delivery/users/request"
 	"github.com/stevenfrst/crowdfunding-api/delivery/users/response"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -48,6 +51,7 @@ func (d *UserDelivery) Login(c echo.Context) error {
 
 	res,err := d.usecase.LoginUseCase(email,password,ctx)
 	if err != nil {
+		log.Println("HIT")
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
 	}
 
@@ -73,6 +77,25 @@ func (d *UserDelivery) DeletaByID(c echo.Context) error {
 	return delivery.SuccessResponse(c,res)
 }
 
+func (d *UserDelivery) GetUserTransaction(c echo.Context) error {
+	idParam,_ := strconv.Atoi(c.Param("id"))
+	//var user response.UserResponseWTransaction
+	resp,err := d.usecase.GetUserTransactionByID(idParam)
+	if err != nil {
+		return delivery.ErrorResponse(c,http.StatusBadRequest,"Failed",err)
+	}
+	return delivery.SuccessResponse(c,response.FromDomainUserTransaction(resp))
+}
+
+func(d *UserDelivery) GetUserJWT(c echo.Context) error {
+	user := c.Get("UserId").(*jwt.Token)
+	claims := user.Claims.(*middlewares.JwtCustomClaims)
+	name := strconv.Itoa(claims.UserId)
+
+	return c.String(http.StatusOK,"Welcome "+name )
+}
+
+
 func (d *UserDelivery) UpdatePassword(c echo.Context) error {
 	var user request.PasswordUpdate
 	ctx := c.Request().Context()
@@ -89,5 +112,4 @@ func (d *UserDelivery) UpdatePassword(c echo.Context) error {
 		return delivery.ErrorResponse(c,http.StatusInternalServerError,resp,err)
 	}
 	return delivery.SuccessResponse(c,resp)
-
 }

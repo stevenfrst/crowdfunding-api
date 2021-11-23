@@ -80,12 +80,7 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 	if err != nil {
 		return Domain{},err
 	}
-	if input.PaymentType == "bank_transfer" && input.TransactionStatus == "capture" && input.FraudStatus == "accept" {
-		transaction.Status = "paid"
-		transaction.PaymentType = input.PaymentType
-		transaction.TransactionStatus = input.TransactionStatus
-		transaction.FraudStatus = input.FraudStatus
-	} else if input.TransactionStatus == "settlement" {
+	if input.PaymentType == "bank_transfer" && input.TransactionStatus == "capture" && input.FraudStatus == "accept" || input.TransactionStatus == "settlement" {
 		transaction.Status = "paid"
 		transaction.PaymentType = input.PaymentType
 		transaction.TransactionStatus = input.TransactionStatus
@@ -94,30 +89,26 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 		transaction.Status = "cancelled"
 	}
 
-	updatedTransaction,err := t.repoTransaction.UpdateTransaction(&transaction)
-	if err != nil {
-		return Domain{},err
-	}
+	updatedTransaction,_ := t.repoTransaction.UpdateTransaction(&transaction)
+
 	campaign,err := t.repoCampaign.FindByID(int(updatedTransaction.CampaignID))
 	if err != nil {
 		return Domain{},err
 	}
 
-	var domainHistory reward.DomainHistory
-
 
 	if  updatedTransaction.Status == "paid" {
 		campaign.Supporters = campaign.Supporters + 1
 		campaign.AmountNow = campaign.AmountNow + updatedTransaction.Nominal
-		rewardId,rewards,err := t.getRewardByAmount(updatedTransaction.Nominal)
-		if err != nil {
-			return Domain{},err
-		}
+		rewardId,rewards,_ := t.getRewardByAmount(updatedTransaction.Nominal)
+		//if err != nil {
+		//	return Domain{},err
+		//}
 		//
-		userEmail,err := t.repoUser.GetEmailByID(int(updatedTransaction.UserID))
-		if err != nil {
-			return Domain{},err
-		}
+		userEmail,_ := t.repoUser.GetEmailByID(int(updatedTransaction.UserID))
+		//if err != nil {
+		//	return Domain{},err
+		//}
 		log.Println(rewards,userEmail)
 		var newMail = Email{
 			Sender: "oppaidaisuki363@gmail.com",
@@ -127,20 +118,18 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 			Nominal : converter.GoalAmountFormatIDR(updatedTransaction.Nominal),
 		}
 
-		err = t.dialer.DialAndSend(SendEmailNotification(newMail))
-		if err != nil {
-			return Domain{}, err
-		}
+		_ = t.dialer.DialAndSend(SendEmailNotification(newMail))
 		_, err = t.repoCampaign.UpdateCampaign(campaign)
 		if err != nil {
 			return Domain{},err
 		}
+		var domainHistory reward.DomainHistory
 
 		domainHistory.UserID = updatedTransaction.UserID
 		domainHistory.TransactionID = updatedTransaction.ID
 		domainHistory.RewardID = uint(rewardId)
 
-		err = t.repoReward.SaveRewardHistory(domainHistory)
+		_ = t.repoReward.SaveRewardHistory(domainHistory)
 	}
 
 
@@ -154,6 +143,7 @@ func (t TransactionUseCase) getRewardByAmount(amount int) (int,string,error) {
 	}
 	return id,reward,nil
 }
+
 
 func SendEmailNotification(sender Email) *gomail.Message  {
 	var bodyEmail string

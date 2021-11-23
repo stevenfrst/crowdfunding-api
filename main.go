@@ -25,7 +25,6 @@ import (
 	_transactionUseCase "github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 	_userUsecase "github.com/stevenfrst/crowdfunding-api/usecase/users"
 	"gorm.io/gorm"
-	"io"
 	"log"
 	"net/http"
 	"time"
@@ -107,12 +106,7 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	c := jaegertracing.New(e, nil)
-	defer func(c io.Closer) {
-		err := c.Close()
-		if err != nil {
-
-		}
-	}(c)
+	defer c.Close()
 	p := prometheus.NewPrometheus("echo", nil)
 	p.Use(e)
 	// User

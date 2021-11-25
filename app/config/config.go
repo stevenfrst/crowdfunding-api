@@ -31,3 +31,12 @@ func GetConfig() Configuration {
 	}
 	return conf
 }
+
+func GetConfigTest() Configuration {
+	conf := Configuration{}
+	err := gonfig.GetConf("../../app/config/config.json",&conf)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return conf
+}

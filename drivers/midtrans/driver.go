@@ -6,6 +6,12 @@ import (
 	"github.com/midtrans/midtrans-go/snap"
 )
 
+type MidtransInterface interface {
+	SetupGlobalMidtransConfig()
+	GenerateSnapReq(id,nominal int) *snap.Request
+	GetLinkResponse(id,nominal int) *snap.Response
+}
+
 type ConfigMidtrans struct {
 	SERVER_KEY string
 }

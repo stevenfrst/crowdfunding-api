@@ -24,7 +24,6 @@ func NewUserDelivery(uc users.UserUsecaseInterface) *UserDelivery {
 }
 
 func (d *UserDelivery) Register(c echo.Context) (err error) {
-	ctx := c.Request().Context()
 	var user request.UserRegister
 	if err = c.Bind(&user);err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -33,7 +32,7 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 		return err
 	}
 
-	out,err := d.usecase.RegisterUseCase(user.ToDomain(),ctx)
+	out,err := d.usecase.RegisterUseCase(user.ToDomain())
 	//log.Println(out)
 	if err != nil {
 		return delivery.ErrorResponse(c,http.StatusInternalServerError,"error",err)
@@ -44,12 +43,12 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 }
 
 func (d *UserDelivery) Login(c echo.Context) error {
-	ctx := c.Request().Context()
+
 
 	email := c.FormValue("email")
 	password := c.FormValue("password")
 
-	res,err := d.usecase.LoginUseCase(email,password,ctx)
+	res,err := d.usecase.LoginUseCase(email,password)
 	if err != nil {
 		log.Println("HIT")
 		return delivery.ErrorResponse(c, http.StatusInternalServerError, "error", err)
@@ -98,7 +97,6 @@ func(d *UserDelivery) GetUserJWT(c echo.Context) error {
 
 func (d *UserDelivery) UpdatePassword(c echo.Context) error {
 	var user request.PasswordUpdate
-	ctx := c.Request().Context()
 	err := c.Bind(&user)
 	if err != nil {
 		return delivery.ErrorResponse(c,http.StatusInternalServerError,"Failed to Bind Data",err)
@@ -107,7 +105,7 @@ func (d *UserDelivery) UpdatePassword(c echo.Context) error {
 	if err != nil {
 		return delivery.ErrorResponse(c,http.StatusBadRequest,"Failed, Wrong Input",err)
 	}
-	resp,err := d.usecase.UpdatePassword(user.ToDomain(),ctx)
+	resp,err := d.usecase.UpdatePassword(user.ToDomain())
 	if err != nil {
 		return delivery.ErrorResponse(c,http.StatusInternalServerError,resp,err)
 	}

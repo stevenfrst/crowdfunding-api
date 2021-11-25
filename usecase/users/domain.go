@@ -1,7 +1,6 @@
 package users
 
 import (
-	"context"
 	//"github.com/stevenfrst/crowdfunding-api/drivers/repository/campaign"
 	//"github.com/stevenfrst/crowdfunding-api/drivers/repository/transaction"
 	"gorm.io/gorm"
@@ -42,20 +41,20 @@ type DomainTransaction struct {
 }
 
 type UserUsecaseInterface interface {
-	LoginUseCase(username,password string,ctx context.Context) (Domain,error)
-	RegisterUseCase(user Domain,ctx context.Context) (Domain,error)
+	LoginUseCase(username,password string) (Domain,error)
+	RegisterUseCase(user Domain) (Domain,error)
 	GetAll() ([]Domain,error)
 	DeleteByID(id int) (string,error)
-	UpdatePassword(domain DomainUpdate,ctx context.Context) (string,error)
+	UpdatePassword(domain DomainUpdate) (string,error)
 	GetUserTransactionByID(id int) (DomainTransaction,error)
 }
 
 type UserRepoInterface interface {
-	CheckLogin(email,password string,ctx context.Context) (Domain, error)
-	Register(user *Domain,ctx context.Context) (Domain,error)
+	CheckLogin(email,password string) (Domain, error)
+	Register(user *Domain) (Domain,error)
 	GetAllUser() ([]Domain,error)
 	DeleteUserByID(id int) (int,error)
-	UpdateUserPassword(update DomainUpdate,ctx context.Context) (string, error)
+	UpdateUserPassword(update DomainUpdate) (string, error)
 	GetUserTransaction(id int) (DomainTransaction,error)
 	GetEmailByID(id int) (string,error)
 }

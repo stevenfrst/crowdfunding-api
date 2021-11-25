@@ -37,6 +37,7 @@ type TransactionUsecaseInterface interface {
 	CreateTransaction(campaignID,userID,Nominal int) (Domain,error)
 	GetNotificationPayment(input DomainNotification) (Domain,error)
 	GetStatusByID(ID int) (Domain,error)
+	GetRewardByAmount(amount int) (int,string,error)
 }
 
 type TransactionRepoInterface interface {

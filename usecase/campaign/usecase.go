@@ -14,13 +14,16 @@ func NewCampaignUseCase(campaignRepo CampaignRepoInterface) CampaignUsecaseInter
 	}
 }
 
-func (u CampaignUseCase) RegisterUseCase(campaign *Domain) (string,error) {
+func (u CampaignUseCase) RegisterUseCase(campaign *Domain) (Domain,error) {
 	//log.Println(user)
 	resp,err := u.CampaignRepository.CreateCampaign(campaign)
+	if err != nil {
+		return Domain{},errors.New("Data Not Found/Internal error")
+	}
 	return resp,err
 }
 
-func (u CampaignUseCase) GetByIDUseCase(id int) (Domain,error) {
+func (u *CampaignUseCase) GetByIDUseCase(id int) (Domain,error) {
 	resp,err := u.CampaignRepository.FindOneCampaignByID(id)
 	if err != nil {
 		return Domain{},err
@@ -39,8 +42,8 @@ func (u CampaignUseCase) GetAllCampaignDetail() ([]Users,error) {
 
 func (u CampaignUseCase) ListAllCampaignByUserUseCase(id int) (UserCampaign, error) {
 	resp,err := u.CampaignRepository.ListCampaignsByUserID(id)
-	if err != nil {
-		return resp,err
+	if err != nil || resp.ID == 0 {
+		return resp,errors.New("Error Mengambil Data/Data Tidak Ada")
 	}
 	return resp, nil
 }

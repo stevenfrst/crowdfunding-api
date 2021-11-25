@@ -1,9 +1,7 @@
 package users
 
 import (
-	"context"
-	"log"
-	"reflect"
+	"errors"
 	"time"
 )
 import _middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
@@ -23,12 +21,11 @@ func NewUsecase(userRepo UserRepoInterface,configJWT *_middleware.ConfigJWT, con
 }
 
 
-func (u UserUseCase) LoginUseCase(username,password string,ctx context.Context) (Domain,error) {
+func (u UserUseCase) LoginUseCase(username,password string) (Domain,error) {
 
-	user ,err := u.repo.CheckLogin(username,password,ctx)
-	log.Println(reflect.TypeOf(user),user.Token)
+	user ,err := u.repo.CheckLogin(username,password)
 	if err != nil {
-		return user,err
+		return user,errors.New("Login Failed")
 	}
 	token,err := u.jwt.GenerateTokenJWT(int(user.ID))
 	user.Token = token
@@ -36,32 +33,33 @@ func (u UserUseCase) LoginUseCase(username,password string,ctx context.Context) 
 }
 
 
-func (u UserUseCase) RegisterUseCase(user Domain,ctx context.Context) (Domain,error) {
-	//log.Println(user)
-	resp,err := u.repo.Register(&user,ctx)
-	//log.Println("HITUSECASE")
-	return resp,err
+func (u UserUseCase) RegisterUseCase(user Domain) (Domain,error) {
+	resp,err := u.repo.Register(&user)
+	if err != nil {
+		return resp,errors.New("Error Register User/Internal Error")
+	}
+	return resp,nil
 }
 
 
 func (u UserUseCase) GetAll() ([]Domain,error) {
 	resp,err := u.repo.GetAllUser()
-	if err != nil {
-		return []Domain{},err
+	if err != nil || len(resp) == 0 {
+		return []Domain{},errors.New("Error Internal / Data Tidak Ditemukan")
 	}
 	return resp,nil
 }
 
 func (u UserUseCase) DeleteByID(id int) (string,error) {
 	resp,err := u.repo.DeleteUserByID(id)
-	if resp == 0 {
-		return "Failed",err
+	if resp == 0 || err != nil {
+		return "Failed",errors.New("Gagal Menghapus Data/Internal Error")
 	}
-	return "Success",err
+	return "Success",nil
 }
 
-func (u *UserUseCase) UpdatePassword(domain DomainUpdate,ctx context.Context) (string,error) {
-	resp,err := u.repo.UpdateUserPassword(domain,ctx)
+func (u *UserUseCase) UpdatePassword(domain DomainUpdate) (string,error) {
+	resp,err := u.repo.UpdateUserPassword(domain)
 	return resp,err
 }
 

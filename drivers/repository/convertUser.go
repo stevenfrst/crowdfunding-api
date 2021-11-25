@@ -26,7 +26,6 @@ func ConvertRepoUseCaseUserCampaign(repo []User) (domain []campaign.Users) {
 			ID:x.ID,
 			FullName:x.FullName,
 			Email:x.Email,
-			Password: x.Password,
 			Job: x.Job,
 			RoleID: x.RoleID,
 			Campaigns: x.Campaigns,
@@ -63,7 +62,7 @@ func FromDomainUser(domain *users.Domain) *User {
 	}
 }
 
-func (u *User) ToDomain() users.Domain {
+func (u User) ToDomain() users.Domain {
 	return users.Domain{
 		ID:      u.ID,
 		FullName: u.FullName,

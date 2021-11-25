@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"errors"
 	repoModels "github.com/stevenfrst/crowdfunding-api/drivers/repository"
 	"github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 	"gorm.io/gorm"
@@ -20,8 +21,8 @@ func (t TransactionRepository) GetByID(ID int) (transaction.Domain,error) {
 	var transaction repoModels.Transaction
 	err := t.db.Where("id = ?",ID).Find(&transaction).Error
 	//log.Println("REPO",transaction)
-	if err != nil {
-		return transaction.ToDomain(),err
+	if err != nil || transaction.ID == 0{
+		return transaction.ToDomain(),errors.New("Error When Processing TransactionDB/ not found")
 	}
 	return transaction.ToDomain(),nil
 }

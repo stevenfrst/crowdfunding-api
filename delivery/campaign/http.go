@@ -40,7 +40,7 @@ func (u CampaignDelivery) CreateCampaignHandler(c echo.Context) (err error) {
 	}
 
 
-	return delivery.SuccessResponse(c,out)
+	return delivery.SuccessResponse(c,response.FromDomainCampaign(out))
 }
 
 func (u CampaignDelivery) GetCampaignByID(c echo.Context) (err error) {

@@ -7,6 +7,7 @@ import (
 	rewardDelivery "github.com/stevenfrst/crowdfunding-api/delivery/reward"
 	transactionDelivery "github.com/stevenfrst/crowdfunding-api/delivery/transaction"
 	userDelivery "github.com/stevenfrst/crowdfunding-api/delivery/users"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type RouteControllerList struct {
@@ -22,8 +23,8 @@ func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	jwt := middleware.JWTWithConfig(d.JWTConfig)
 
 	c.POST("/v1/login",d.UserDelivery.Login)
-	//c.GET("/v1/profile",d.UserDelivery.GetUserJWT)
 	c.POST("/v1/register",d.UserDelivery.Register)
+	c.GET("/swagger/*", echoSwagger.WrapHandler)
 
 
 	c.POST("/v1/campaign",d.CampaignDelivery.CreateCampaignHandler,jwt)

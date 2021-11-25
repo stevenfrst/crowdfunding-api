@@ -20,11 +20,11 @@ type TransactionUseCase struct {
 	repoCampaign campaign.CampaignRepoInterface
 	repoReward reward.RewardRepoInterface
 	repoUser users.UserRepoInterface
-	payment payment.ConfigMidtrans
+	payment payment.MidtransInterface
 	dialer gomail.Dialer
 }
 
-func NewUsecase(transactionRepo TransactionRepoInterface,campaignRepository campaign.CampaignRepoInterface,payment payment.ConfigMidtrans,email gomail.Dialer, rewardRepo reward.RewardRepoInterface, repoUser users.UserRepoInterface) TransactionUsecaseInterface {
+func NewUsecase(transactionRepo TransactionRepoInterface,campaignRepository campaign.CampaignRepoInterface,payment payment.MidtransInterface,email gomail.Dialer, rewardRepo reward.RewardRepoInterface, repoUser users.UserRepoInterface) TransactionUsecaseInterface {
 	return TransactionUseCase{
 		transactionRepo,
 		campaignRepository,
@@ -53,7 +53,7 @@ func (t TransactionUseCase) CreateTransaction(campaignID,userID,Nominal int) (Do
 	transaction.ID = uint(id)
 	transactionReturned,err := t.repoTransaction.CreateTransaction(&transaction)
 	if err != nil {
-		return Domain{},err
+		return Domain{},errors.New("Gagal Membuat Transaksi/Internal Error")
 	}
 
 	return transactionReturned,nil
@@ -63,7 +63,7 @@ func (t TransactionUseCase) GetStatusByID(ID int) (Domain,error) {
 	transaction,err := t.repoTransaction.GetByID(ID)
 	//log.Println(transaction)
 	if err != nil  {
-		return Domain{},err
+		return Domain{},errors.New("Internal Error")
 	} else if transaction.ID == 0 {
 		return Domain{},errors.New("Not Found")
 	}
@@ -100,7 +100,7 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 	if  updatedTransaction.Status == "paid" {
 		campaign.Supporters = campaign.Supporters + 1
 		campaign.AmountNow = campaign.AmountNow + updatedTransaction.Nominal
-		rewardId,rewards,_ := t.getRewardByAmount(updatedTransaction.Nominal)
+		rewardId,rewards,_ := t.GetRewardByAmount(updatedTransaction.Nominal)
 		//if err != nil {
 		//	return Domain{},err
 		//}
@@ -109,7 +109,7 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 		//if err != nil {
 		//	return Domain{},err
 		//}
-		log.Println(rewards,userEmail)
+		//log.Println(rewards,userEmail)
 		var newMail = Email{
 			Sender: "oppaidaisuki363@gmail.com",
 			ToEmail:userEmail,
@@ -136,7 +136,7 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 	return *updatedTransaction,err
 }
 
-func (t TransactionUseCase) getRewardByAmount(amount int) (int,string,error) {
+func (t TransactionUseCase) GetRewardByAmount(amount int) (int,string,error) {
 	id,reward, err := t.repoReward.GetRewardByAmount(amount)
 	if err != nil {
 		return 0,"Failed to get reward",err

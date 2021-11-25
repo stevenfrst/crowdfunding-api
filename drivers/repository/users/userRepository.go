@@ -1,7 +1,6 @@
 package users
 
 import (
-	"context"
 	"github.com/stevenfrst/crowdfunding-api/drivers/repository"
 	"github.com/stevenfrst/crowdfunding-api/helper/encrypt"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
@@ -19,7 +18,7 @@ func NewUserRepository(gormDb *gorm.DB) users.UserRepoInterface {
 	}
 }
 
-func (r *UserRepository) CheckLogin(email,password string,ctx context.Context) (users.Domain, error) {
+func (r *UserRepository) CheckLogin(email,password string) (users.Domain, error) {
 	var user repoModels.User
 
 	err := r.db.Where("email = ?", email).First(&user).Error
@@ -34,7 +33,7 @@ func (r *UserRepository) CheckLogin(email,password string,ctx context.Context) (
 	return user.ToDomain(),nil
 }
 
-func (r *UserRepository) Register(user *users.Domain,ctx context.Context) (users.Domain,error) {
+func (r *UserRepository) Register(user *users.Domain) (users.Domain,error) {
 
 	userIn := repoModels.FromDomainUser(user)
 	hashedPassword,err := encrypt.Hash(user.Password)
@@ -72,8 +71,8 @@ func (r UserRepository) DeleteUserByID(id int) (int,error) {
 }
 
 
-func (r UserRepository) UpdateUserPassword(update users.DomainUpdate,ctx context.Context) (string, error) {
-	user,err := r.CheckLogin(update.Email,update.OldPassword,ctx)
+func (r UserRepository) UpdateUserPassword(update users.DomainUpdate) (string, error) {
+	user,err := r.CheckLogin(update.Email,update.OldPassword)
 	if err != nil {
 		return "failed",err
 	}

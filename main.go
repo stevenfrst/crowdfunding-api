@@ -24,11 +24,29 @@ import (
 	_rewardUseCase "github.com/stevenfrst/crowdfunding-api/usecase/reward"
 	_transactionUseCase "github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 	_userUsecase "github.com/stevenfrst/crowdfunding-api/usecase/users"
+	_ "github.com/swaggo/echo-swagger/example/docs"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"time"
 )
+
+
+
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host petstore.swagger.io
+// @BasePath /v2
 
 type CustomValidator struct {
 	Validator *validator.Validate

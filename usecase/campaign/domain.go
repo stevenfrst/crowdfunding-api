@@ -50,7 +50,7 @@ type UserCampaign struct {
 
 
 type CampaignUsecaseInterface interface {
-	RegisterUseCase(campaign *Domain) (string,error)
+	RegisterUseCase(campaign *Domain) (Domain,error)
 	GetByIDUseCase(id int) (Domain,error)
 	GetAllCampaignDetail() ([]Users,error)
 	ListAllCampaignByUserUseCase(id int) (UserCampaign, error)
@@ -58,7 +58,7 @@ type CampaignUsecaseInterface interface {
 }
 
 type CampaignRepoInterface interface {
-	CreateCampaign(campaign *Domain) (string,error)
+	CreateCampaign(campaignIn *Domain) (Domain,error)
 	FindOneCampaignByID(id int) (Domain,error)
 	FindByID(ID int) (Domain,error)
 	ListCampaignsByUserID(id int) (UserCampaign,error)

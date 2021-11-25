@@ -6,7 +6,6 @@ import (
 	"github.com/stevenfrst/crowdfunding-api/usecase/campaign"
 	"gorm.io/gorm"
 	"log"
-	"strconv"
 )
 
 type CampaignRepository struct {
@@ -19,20 +18,22 @@ func NewCampaignRepository(gormDb *gorm.DB) campaign.CampaignRepoInterface {
 	}
 }
 
-func (c CampaignRepository) CreateCampaign(campaign *campaign.Domain) (string,error) {
-	result := c.db.Create(repoModels.FromDomainCampaign(campaign))
+func (c CampaignRepository) CreateCampaign(campaignIn *campaign.Domain) (campaign.Domain,error) {
+	result := c.db.Create(repoModels.FromDomainCampaign(campaignIn))
 	//log.Println(reflect.TypeOf(user),result.RowsAffected)
 	if result.Error != nil {
-		return strconv.Itoa(int(result.RowsAffected)),result.Error
+		return campaign.Domain{},result.Error
 	}
-	return "Success",nil
+	log.Println(campaignIn.ID)
+	return *campaignIn,nil
 }
 
 func (c CampaignRepository) FindOneCampaignByID(id int) (campaign.Domain,error) {
 	var campaign repoModels.Campaign
 	err := c.db.Where("id = ?",id).Find(&campaign).Error
-	if err != nil {
-		if err != gorm.ErrRecordNotFound {
+
+	if err != nil || campaign.ID == 0{
+		if err == gorm.ErrRecordNotFound {
 			return campaign.ToDomain(),errors.New("Campaign not found")
 		}
 		return campaign.ToDomain(),errors.New("Error getting campaign")
@@ -54,9 +55,9 @@ func (c CampaignRepository) FindByID(ID int) (campaign.Domain,error) {
 func (c CampaignRepository) ListCampaignsByUserID(id int) (campaign.UserCampaign,error) {
 	var usersQuery repoModels.User
 	err := c.db.Preload("Campaigns").Where("id = ?",id).Find(&usersQuery).Error
-	//log.Println(usersQuery)
-	if err != nil {
-		return repoModels.ConvertRepoUserCampaign(usersQuery),err
+	log.Println(usersQuery)
+	if err != nil || usersQuery.ID == 0 {
+		return repoModels.ConvertRepoUserCampaign(usersQuery),errors.New("Data Tidak Ditemukan/Error")
 	}
 	return repoModels.ConvertRepoUserCampaign(usersQuery),nil
 }

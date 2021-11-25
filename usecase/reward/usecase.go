@@ -31,8 +31,8 @@ func (r RewardUseCase) UpdateReward(domain Domain) (Domain,error) {
 
 func (r RewardUseCase) DeleteRewardByID(id int) (string,error) {
 	resp,err := r.repoReward.DeleteRewardByID(id)
-	if err != nil {
-		return "Gagal Menghapus Data",err
+	if err != nil || resp == "" {
+		return "Gagal Menghapus Data/Internal Error",err
 	}
 	return resp,nil
 }

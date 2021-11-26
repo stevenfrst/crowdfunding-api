@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 import _middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
@@ -25,7 +26,9 @@ func (u UserUseCase) LoginUseCase(username,password string) (Domain,error) {
 
 	user ,err := u.repo.CheckLogin(username,password)
 	if err != nil {
-		return user,errors.New("Login Failed")
+		return user,errors.New("internal error")
+	} else if user.ID == 0  {
+		return Domain{},errors.New("email/password not match")
 	}
 	token,err := u.jwt.GenerateTokenJWT(int(user.ID))
 	user.Token = token
@@ -36,7 +39,11 @@ func (u UserUseCase) LoginUseCase(username,password string) (Domain,error) {
 func (u UserUseCase) RegisterUseCase(user Domain) (Domain,error) {
 	resp,err := u.repo.Register(&user)
 	if err != nil {
-		return resp,errors.New("Error Register User/Internal Error")
+		if fmt.Sprintf("%v",err) == "failed to create record" {
+			return resp,errors.New("failed to registering user")
+		} else {
+			return resp,errors.New("internal error")
+		}
 	}
 	return resp,nil
 }
@@ -44,7 +51,7 @@ func (u UserUseCase) RegisterUseCase(user Domain) (Domain,error) {
 
 func (u UserUseCase) GetAll() ([]Domain,error) {
 	resp,err := u.repo.GetAllUser()
-	if err != nil || len(resp) == 0 {
+	if err != nil {
 		return []Domain{},errors.New("Error Internal / Data Tidak Ditemukan")
 	}
 	return resp,nil

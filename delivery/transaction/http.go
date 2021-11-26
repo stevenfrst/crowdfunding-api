@@ -14,12 +14,14 @@ type TransactionDelivery struct {
 	usecase transaction.TransactionUsecaseInterface
 }
 
+// NewTransactionDelivery function used to assign all handlers to usecase
 func NewTransactionDelivery(uc transaction.TransactionUsecaseInterface) *TransactionDelivery {
 	return &TransactionDelivery{
 		uc,
 	}
 }
 
+// CreateTransaction used to make transactions via formvalue and processed to usecase
 func (t *TransactionDelivery) CreateTransaction(c echo.Context) error {
 	campaignid,_ := strconv.Atoi(c.FormValue("campaign_id"))
 	userid,_ := strconv.Atoi(c.FormValue("user_id"))
@@ -33,6 +35,7 @@ func (t *TransactionDelivery) CreateTransaction(c echo.Context) error {
 
 }
 
+// GetStatusByID used to view transaction status via ID
 func (t TransactionDelivery) GetStatusByID(c echo.Context) error {
 	id,err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -45,7 +48,7 @@ func (t TransactionDelivery) GetStatusByID(c echo.Context) error {
 	return delivery.SuccessResponse(c,response.FromDomain(resp))
 
 }
-
+// GetNotificationPayment used by midtrans to send payment notifications
 func (t TransactionDelivery) GetNotificationPayment(c echo.Context) error {
 	var input request.TransactionNotification
 

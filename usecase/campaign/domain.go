@@ -59,6 +59,7 @@ type CampaignUsecaseInterface interface {
 
 type CampaignRepoInterface interface {
 	CreateCampaign(campaignIn *Domain) (Domain,error)
+	//GetLast() int
 	FindOneCampaignByID(id int) (Domain,error)
 	FindByID(ID int) (Domain,error)
 	ListCampaignsByUserID(id int) (UserCampaign,error)

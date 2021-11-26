@@ -1,6 +1,7 @@
 package users
 
 import (
+	"errors"
 	"github.com/stevenfrst/crowdfunding-api/drivers/repository"
 	"github.com/stevenfrst/crowdfunding-api/helper/encrypt"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
@@ -23,11 +24,11 @@ func (r *UserRepository) CheckLogin(email,password string) (users.Domain, error)
 
 	err := r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
-		return users.Domain{},err
+		return users.Domain{},errors.New("error db not working")
 	}
 	err = encrypt.CheckPassword(password,user.Password)
 	if err != nil {
-		return users.Domain{},err
+		return users.Domain{},nil
 	}
 
 	return user.ToDomain(),nil
@@ -45,7 +46,7 @@ func (r *UserRepository) Register(user *users.Domain) (users.Domain,error) {
 	result := r.db.Create(userIn)
 	//log.Println(reflect.TypeOf(user),result.RowsAffected)
 	if result.Error != nil {
-		return userIn.ToDomain(),result.Error
+		return userIn.ToDomain(),errors.New("failed to create record")
 	}
 
 	return userIn.ToDomain(),nil

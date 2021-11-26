@@ -89,6 +89,23 @@ func TestRegisterUseCase(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "tahu bulat digoreng",resp.CampaignName)
 	})
+
+	t.Run("Error Register", func(t *testing.T) {
+		campaignMockRepo.On("CreateCampaign",
+			mock.AnythingOfType("*campaign.Domain")).Return(campaign.Domain{},errors.New("")).Once()
+		datamock := campaign.Domain{
+			UserID:1,
+			CampaignName: dataCampaign.CampaignName,
+			ShortDescription:dataCampaign.ShortDescription,
+			LongDescription: dataCampaign.LongDescription,
+			Target: dataCampaign.Target,
+			AmountNow:dataCampaign.AmountNow,
+			Supporters:dataCampaign.Supporters,
+		}
+		resp,err := campaignUseCase.RegisterUseCase(&datamock)
+		assert.Error(t, err)
+		assert.Equal(t, campaign.Domain{},resp)
+	})
 }
 
 func TestGetAllCampaignDetail(t *testing.T) {

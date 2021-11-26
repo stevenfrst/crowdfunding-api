@@ -18,13 +18,19 @@ func NewCampaignRepository(gormDb *gorm.DB) campaign.CampaignRepoInterface {
 	}
 }
 
+func (c CampaignRepository) GetLast() int {
+	var campaign repoModels.Campaign
+	c.db.Last(&campaign)
+	return int(campaign.ID)
+}
+
 func (c CampaignRepository) CreateCampaign(campaignIn *campaign.Domain) (campaign.Domain,error) {
 	result := c.db.Create(repoModels.FromDomainCampaign(campaignIn))
-	//log.Println(reflect.TypeOf(user),result.RowsAffected)
 	if result.Error != nil {
 		return campaign.Domain{},result.Error
 	}
-	log.Println(campaignIn.ID)
+
+	campaignIn.ID = uint(c.GetLast())
 	return *campaignIn,nil
 }
 

@@ -2,6 +2,7 @@ package users_test
 
 import (
 	"errors"
+	"fmt"
 	config2 "github.com/stevenfrst/crowdfunding-api/app/config"
 	middlewares "github.com/stevenfrst/crowdfunding-api/app/middleware"
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
@@ -50,7 +51,17 @@ func TestRegisterUser(t *testing.T) {
 	t.Run("Fail Registering User", func(t *testing.T) {
 		userRepositoryMock.On("Register",
 			mock.AnythingOfType("*users.Domain"),
-		).Return(users.Domain{},errors.New("Gagal Membuat Akun")).Once()
+		).Return(users.Domain{},errors.New("failed to create record")).Once()
+		resp,err := userUsecase.RegisterUseCase(dataUser)
+		assert.Error(t, err)
+		assert.Equal(t, fmt.Errorf("failed to registering user"),err)
+		assert.Equal(t, users.Domain{},resp)
+	})
+
+	t.Run("Fail Registering User case db error", func(t *testing.T) {
+		userRepositoryMock.On("Register",
+			mock.AnythingOfType("*users.Domain"),
+		).Return(users.Domain{},errors.New("db err")).Once()
 		resp,err := userUsecase.RegisterUseCase(dataUser)
 		assert.Error(t, err)
 		assert.Equal(t, users.Domain{},resp)
@@ -75,7 +86,17 @@ func TestLoginUseCase(t *testing.T) {
 		userRepositoryMock.On("CheckLogin",
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("string"),
-		).Return(users.Domain{},errors.New("Not Found")).Once()
+		).Return(users.Domain{},nil).Once()
+		user, err := userUsecase.LoginUseCase("stevenhumam69@gmail.com","johnlennon")
+		assert.Error(t, err)
+		assert.Equal(t, users.Domain{},user)
+	})
+
+	t.Run("error internal", func(t *testing.T) {
+		userRepositoryMock.On("CheckLogin",
+			mock.AnythingOfType("string"),
+			mock.AnythingOfType("string"),
+		).Return(users.Domain{},errors.New("internal error")).Once()
 		user, err := userUsecase.LoginUseCase("stevenhumam69@gmail.com","johnlennon")
 		assert.Error(t, err)
 		assert.Equal(t, users.Domain{},user)

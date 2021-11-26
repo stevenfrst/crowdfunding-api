@@ -15,13 +15,14 @@ import (
 type CampaignDelivery struct {
 	usecase campaign.CampaignUsecaseInterface
 }
-
+// NewCampaignDelivery function to manage all handlers in campaign
 func NewCampaignDelivery(cc campaign.CampaignUsecaseInterface) *CampaignDelivery {
 	return &CampaignDelivery{
 		usecase: cc,
 	}
 }
 
+// CreateCampaignHandler handler to handle creating campaigns with json
 func (u CampaignDelivery) CreateCampaignHandler(c echo.Context) (err error) {
 	var campaignIn request.CampaignRequest
 	if err = c.Bind(&campaignIn);err != nil {
@@ -43,6 +44,7 @@ func (u CampaignDelivery) CreateCampaignHandler(c echo.Context) (err error) {
 	return delivery.SuccessResponse(c,response.FromDomainCampaign(out))
 }
 
+// GetCampaignByID handler to take care of creating a campaign via id using params
 func (u CampaignDelivery) GetCampaignByID(c echo.Context) (err error) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -59,6 +61,7 @@ func (u CampaignDelivery) GetCampaignByID(c echo.Context) (err error) {
 	return delivery.SuccessResponse(c,response.FromDomainCampaign(resp))
 }
 
+// GetAllCampaignDetail handler to take care of getting all campaign details
 func (u CampaignDelivery) GetAllCampaignDetail(c echo.Context) (err error) {
 
 	if err != nil {
@@ -75,6 +78,7 @@ func (u CampaignDelivery) GetAllCampaignDetail(c echo.Context) (err error) {
 	return delivery.SuccessResponse(c,response.FromDomainCampaignUserAll(resp))
 }
 
+// GetAllCampaignByUserID handler to take care of getting all campaigns owned by the user via id
 func (u CampaignDelivery) GetAllCampaignByUserID(c echo.Context) (err error) {
 	idParam := c.Param("id")
 	id,err := strconv.Atoi(idParam)
@@ -92,6 +96,7 @@ func (u CampaignDelivery) GetAllCampaignByUserID(c echo.Context) (err error) {
 	return delivery.SuccessResponse(c,response.FromDomainCampaignUser(resp))
 }
 
+// EditCampaignTargetByID handler to edit target campaign via id
 func (u CampaignDelivery) EditCampaignTargetByID(c echo.Context) (err error) {
 	id,_ := strconv.Atoi(c.FormValue("id"))
 	target,_ := strconv.Atoi(c.FormValue("target"))

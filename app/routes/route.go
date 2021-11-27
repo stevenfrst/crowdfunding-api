@@ -3,7 +3,6 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	campaignDelivery "github.com/stevenfrst/crowdfunding-api/delivery/campaign"
 	rewardDelivery "github.com/stevenfrst/crowdfunding-api/delivery/reward"
 	transactionDelivery "github.com/stevenfrst/crowdfunding-api/delivery/transaction"
@@ -22,7 +21,6 @@ type RouteControllerList struct {
 func (d RouteControllerList) RouteRegister(c *echo.Echo) {
 	jwt := middleware.JWTWithConfig(d.JWTConfig)
 
-	c.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
 
 	c.POST("/v1/login",d.UserDelivery.Login)
 	c.POST("/v1/register",d.UserDelivery.Register)

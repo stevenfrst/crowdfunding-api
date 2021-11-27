@@ -1,9 +1,9 @@
 package main
 
 import (
+	echoPrometheus "github.com/globocom/echo-prometheus"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo-contrib/jaegertracing"
-	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	config2 "github.com/stevenfrst/crowdfunding-api/app/config"
@@ -126,8 +126,24 @@ func main() {
 	e.Validator = &CustomValidator{Validator: validator.New()}
 	c := jaegertracing.New(e, nil)
 	defer c.Close()
-	p := prometheus.NewPrometheus("echo", nil)
-	p.Use(e)
+	//p := prometheus.NewPrometheus("echo", nil)
+	//p.Use(e)
+	var configMetrics = echoPrometheus.NewConfig()
+	configMetrics.Namespace = "namespace"
+	configMetrics.Buckets = []float64{
+		0.0005, // 0.5ms
+		0.001,  // 1ms
+		0.005,  // 5ms
+		0.01,   // 10ms
+		0.05,   // 50ms
+		0.1,    // 100ms
+		0.5,    // 500ms
+		1,      // 1s
+		2,      // 2s
+	}
+
+	e.Use(echoPrometheus.MetricsMiddlewareWithConfig(configMetrics))
+
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",

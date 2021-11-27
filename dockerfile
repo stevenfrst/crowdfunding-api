@@ -26,6 +26,7 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
+RUN cp /build/config.json .
 
 # Build a small image
 FROM scratch

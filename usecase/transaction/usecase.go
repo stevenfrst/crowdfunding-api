@@ -24,6 +24,7 @@ type TransactionUseCase struct {
 	dialer gomail.Dialer
 }
 
+// NewUsecase function to create a new UsecaseInterface
 func NewUsecase(transactionRepo TransactionRepoInterface,campaignRepository campaign.CampaignRepoInterface,payment payment.MidtransInterface,email gomail.Dialer, rewardRepo reward.RewardRepoInterface, repoUser users.UserRepoInterface) TransactionUsecaseInterface {
 	return TransactionUseCase{
 		transactionRepo,
@@ -35,15 +36,11 @@ func NewUsecase(transactionRepo TransactionRepoInterface,campaignRepository camp
 	}
 }
 
+// CreateTransaction method to create new transaction
 func (t TransactionUseCase) CreateTransaction(campaignID,userID,Nominal int) (Domain,error) {
 	var transaction Domain
-	//id, err := t.repoTransaction.GetLastTransactionID()
 	rand.Seed(time.Now().UTC().UnixNano())
 	id := rand.Intn(1000)
-	//if err != nil {
-	//	return Domain{},err
-	//}
-	//id++
 	log.Println(id)
 	resp := t.payment.GetLinkResponse(id,Nominal)
 	transaction.CampaignID = uint(campaignID)
@@ -55,10 +52,10 @@ func (t TransactionUseCase) CreateTransaction(campaignID,userID,Nominal int) (Do
 	if err != nil {
 		return Domain{},errors.New("Gagal Membuat Transaksi/Internal Error")
 	}
-
 	return transactionReturned,nil
 }
 
+// GetStatusByID method return domain transaction via id
 func (t TransactionUseCase) GetStatusByID(ID int) (Domain,error) {
 	transaction,err := t.repoTransaction.GetByID(ID)
 	//log.Println(transaction)
@@ -71,6 +68,7 @@ func (t TransactionUseCase) GetStatusByID(ID int) (Domain,error) {
 	return transaction,nil
 }
 
+// GetNotificationPayment method to get payment notification
 func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Domain,error) {
 	transactionID, err := strconv.Atoi(input.OrderID)
 	if err != nil {
@@ -144,7 +142,7 @@ func (t TransactionUseCase) GetRewardByAmount(amount int) (int,string,error) {
 	return id,reward,nil
 }
 
-
+// SendEmailNotification function to create gomail Message
 func SendEmailNotification(sender Email) *gomail.Message  {
 	var bodyEmail string
 	if sender.Reward != "" {

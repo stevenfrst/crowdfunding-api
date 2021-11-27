@@ -52,7 +52,7 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 func (d *UserDelivery) Login(c echo.Context) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
-	var user request.UserRegister
+	var user request.UserLogin
 	user.Email = email
 	user.Password = password
 	if err := c.Validate(&user); err != nil {

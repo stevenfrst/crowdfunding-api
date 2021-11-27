@@ -7,15 +7,15 @@ import (
 type CampaignUseCase struct {
 	CampaignRepository CampaignRepoInterface
 }
-
+// NewCampaignUseCase function creates a new CampaignUseCaseInterface
 func NewCampaignUseCase(campaignRepo CampaignRepoInterface) CampaignUsecaseInterface {
 	return &CampaignUseCase{
 		campaignRepo,
 	}
 }
 
+// RegisterUseCase method registers a user
 func (u CampaignUseCase) RegisterUseCase(campaign *Domain) (Domain,error) {
-	//log.Println(user)
 	resp,err := u.CampaignRepository.CreateCampaign(campaign)
 	if err != nil {
 		return Domain{},errors.New("internal error")
@@ -23,6 +23,7 @@ func (u CampaignUseCase) RegisterUseCase(campaign *Domain) (Domain,error) {
 	return resp,err
 }
 
+// GetByIDUseCase method returns a domain by id
 func (u *CampaignUseCase) GetByIDUseCase(id int) (Domain,error) {
 	resp,err := u.CampaignRepository.FindOneCampaignByID(id)
 	if err != nil {
@@ -31,7 +32,7 @@ func (u *CampaignUseCase) GetByIDUseCase(id int) (Domain,error) {
 	return resp,nil
 }
 
-
+// GetAllCampaignDetail methods return a list of all campaign user have
 func (u CampaignUseCase) GetAllCampaignDetail() ([]Users,error) {
 	respDump := u.CampaignRepository.ListAllCampaignByUser()
 	if len(respDump) == 0 {
@@ -39,7 +40,7 @@ func (u CampaignUseCase) GetAllCampaignDetail() ([]Users,error) {
 	}
 	return respDump,nil
 }
-// refactor
+// ListAllCampaignByUserUseCase methods return a list of a user have via id
 func (u CampaignUseCase) ListAllCampaignByUserUseCase(id int) (UserCampaign, error) {
 	resp,err := u.CampaignRepository.ListCampaignsByUserID(id)
 	if err != nil {
@@ -50,6 +51,7 @@ func (u CampaignUseCase) ListAllCampaignByUserUseCase(id int) (UserCampaign, err
 	return resp, nil
 }
 
+// EditTargetCampaign methods edit a campaign target via id and desired target
 func (u CampaignUseCase) EditTargetCampaign(id,target int) (Domain,error) {
 	resp,err := u.CampaignRepository.EditTargetCampaign(id,target)
 	if err != nil {

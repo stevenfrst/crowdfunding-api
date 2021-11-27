@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo-contrib/jaegertracing"
 	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	config2 "github.com/stevenfrst/crowdfunding-api/app/config"
 	_middleware "github.com/stevenfrst/crowdfunding-api/app/middleware"
 	routes "github.com/stevenfrst/crowdfunding-api/app/routes"
@@ -127,6 +128,14 @@ func main() {
 	defer c.Close()
 	p := prometheus.NewPrometheus("echo", nil)
 	p.Use(e)
+
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	e.Pre(middleware.RemoveTrailingSlash())
+
+
+
 	// User
 
 	userRepoInterface := _userRepo.NewUserRepository(db)

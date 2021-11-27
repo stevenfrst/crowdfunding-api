@@ -2,6 +2,7 @@ package repoModels
 
 import "github.com/stevenfrst/crowdfunding-api/usecase/transaction"
 
+// FromDomainTransaction convert domain transaction to transaction repo
 func FromDomainTransaction(domain *transaction.Domain) Transaction {
 	return Transaction {
 		ID:domain.ID,
@@ -16,6 +17,7 @@ func FromDomainTransaction(domain *transaction.Domain) Transaction {
 	}
 }
 
+// ToDomain convert transaction repo to domain
 func (t Transaction) ToDomain() transaction.Domain {
 	return transaction.Domain{
 		ID:t.ID,

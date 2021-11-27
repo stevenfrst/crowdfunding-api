@@ -12,6 +12,7 @@ type GmailConfig struct {
 	CONFIG_SENDER_NAME string
 }
 
+// NewGmailConfig use for create gmail config
 func NewGmailConfig(g GmailConfig) *gomail.Dialer {
 	return gomail.NewDialer(
 		g.CONFIG_SMTP_HOST,

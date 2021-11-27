@@ -11,12 +11,14 @@ type TransactionRepository struct {
 	db *gorm.DB
 }
 
+// NewTransactionRepository creates a new Transaction interface
 func NewTransactionRepository(gormDb *gorm.DB) transaction.TransactionRepoInterface {
 	return &TransactionRepository{
 		db: gormDb,
 	}
 }
 
+// GetByID get a transaction via id
 func (t TransactionRepository) GetByID(ID int) (transaction.Domain,error) {
 	var transaction repoModels.Transaction
 	err := t.db.Where("id = ?",ID).Find(&transaction).Error
@@ -27,7 +29,7 @@ func (t TransactionRepository) GetByID(ID int) (transaction.Domain,error) {
 	return transaction.ToDomain(),nil
 }
 
-
+// UpdateTransaction methods to update transaction and return to use case domain
 func (t TransactionRepository) UpdateTransaction(transaction *transaction.Domain) (*transaction.Domain,error) {
 	err := t.db.Save(repoModels.FromDomainTransaction(transaction)).Error
 
@@ -38,7 +40,7 @@ func (t TransactionRepository) UpdateTransaction(transaction *transaction.Domain
 
 }
 
-
+// GetLastTransactionID methods to get last transaction
 func (t TransactionRepository) GetLastTransactionID() (int, error) {
 	var transaction repoModels.Transaction
 	err := t.db.Last(&transaction).Error
@@ -49,7 +51,7 @@ func (t TransactionRepository) GetLastTransactionID() (int, error) {
 	return int(transaction.ID),nil
 }
 
-
+// CreateTransaction methods to create transaction
 func (t TransactionRepository) CreateTransaction(transaksi *transaction.Domain) (transaction.Domain,error) {
 	//log.Println("Creating transaction",transaksi)
 	transactionDomain := repoModels.FromDomainTransaction(transaksi)

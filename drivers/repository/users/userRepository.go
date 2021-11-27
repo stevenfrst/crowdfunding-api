@@ -13,12 +13,14 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
+// NewUserRepository function to create a new UserRepository
 func NewUserRepository(gormDb *gorm.DB) users.UserRepoInterface {
 	return &UserRepository{
 		db: gormDb,
 	}
 }
 
+// CheckLogin methods to check if user ok or not
 func (r *UserRepository) CheckLogin(email,password string) (users.Domain, error) {
 	var user repoModels.User
 
@@ -34,6 +36,7 @@ func (r *UserRepository) CheckLogin(email,password string) (users.Domain, error)
 	return user.ToDomain(),nil
 }
 
+// Register methods to registering a user
 func (r *UserRepository) Register(user *users.Domain) (users.Domain,error) {
 
 	userIn := repoModels.FromDomainUser(user)
@@ -52,6 +55,7 @@ func (r *UserRepository) Register(user *users.Domain) (users.Domain,error) {
 	return userIn.ToDomain(),nil
 }
 
+// GetAllUser methods to get all user
 func (r UserRepository) GetAllUser() ([]users.Domain,error) {
 	var users []repoModels.User
 	err := r.db.Find(&users).Error
@@ -61,6 +65,7 @@ func (r UserRepository) GetAllUser() ([]users.Domain,error) {
 	return repoModels.ConvertRepoUseCaseUserList(users),nil
 }
 
+// DeleteUserByID methods to delete a user by id
 func (r UserRepository) DeleteUserByID(id int) (int,error) {
 	var user repoModels.User
 	result := r.db.Where("id = ? AND role_id = ?",id,2).Delete(&user)
@@ -68,10 +73,9 @@ func (r UserRepository) DeleteUserByID(id int) (int,error) {
 		return int(result.RowsAffected),result.Error
 	}
 	return int(result.RowsAffected),nil
-
 }
 
-
+// UpdateUserPassword methods to update a user
 func (r UserRepository) UpdateUserPassword(update users.DomainUpdate) (string, error) {
 	user,err := r.CheckLogin(update.Email,update.OldPassword)
 	if err != nil {
@@ -93,6 +97,7 @@ func (r UserRepository) UpdateUserPassword(update users.DomainUpdate) (string, e
 	return "Success",err
 }
 
+// GetUserTransaction methods to get a user transaction
 func(r UserRepository) GetUserTransaction(id int) (users.DomainTransaction,error) {
 	var user repoModels.User
 	err := r.db.Preload("Transaction").Where("id = ?",id).Find(&user).Error
@@ -102,6 +107,7 @@ func(r UserRepository) GetUserTransaction(id int) (users.DomainTransaction,error
 	return user.ToDomainUserTransaction(),nil
 }
 
+// GetEmailByID methods to get email by id
 func (r UserRepository) GetEmailByID(id int) (string,error) {
 	var user repoModels.User
 	err := r.db.Where("id = ?",id).Find(&user).Error

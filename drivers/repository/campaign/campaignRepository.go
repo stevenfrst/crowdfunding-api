@@ -11,19 +11,21 @@ import (
 type CampaignRepository struct {
 	db *gorm.DB
 }
-
+// NewCampaignRepository handle all campaign repositories methods
 func NewCampaignRepository(gormDb *gorm.DB) campaign.CampaignRepoInterface {
 	return &CampaignRepository{
 		db: gormDb,
 	}
 }
 
+// GetLast methods to getting last id
 func (c CampaignRepository) GetLast() int {
 	var campaign repoModels.Campaign
 	c.db.Last(&campaign)
 	return int(campaign.ID)
 }
 
+// CreateCampaign methods to create new campaign
 func (c CampaignRepository) CreateCampaign(campaignIn *campaign.Domain) (campaign.Domain,error) {
 	result := c.db.Create(repoModels.FromDomainCampaign(campaignIn))
 	if result.Error != nil {
@@ -33,7 +35,7 @@ func (c CampaignRepository) CreateCampaign(campaignIn *campaign.Domain) (campaig
 	campaignIn.ID = uint(c.GetLast())
 	return *campaignIn,nil
 }
-
+// FindOneCampaignByID methods to get 1 campaign by id
 func (c CampaignRepository) FindOneCampaignByID(id int) (campaign.Domain,error) {
 	var campaign repoModels.Campaign
 	err := c.db.Where("id = ?",id).Find(&campaign).Error
@@ -47,7 +49,7 @@ func (c CampaignRepository) FindOneCampaignByID(id int) (campaign.Domain,error) 
 	return campaign.ToDomain(),nil
 }
 
-
+// FindByID method to find id via id return campaign domain to use case
 func (c CampaignRepository) FindByID(ID int) (campaign.Domain,error) {
 	var campaignQuery repoModels.Campaign
 	err := c.db.First(&campaignQuery,ID).Error

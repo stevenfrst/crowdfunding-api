@@ -4,6 +4,7 @@ import (
 	"github.com/stevenfrst/crowdfunding-api/usecase/reward"
 )
 
+// FromDomainHistory convert domain reward-history to reward_history repo
 func FromDomainHistory(domain *reward.DomainHistory) *RewardHistory {
 	return &RewardHistory {
 		ID:domain.ID,
@@ -13,6 +14,7 @@ func FromDomainHistory(domain *reward.DomainHistory) *RewardHistory {
 	}
 }
 
+// ToDomain convert domain-reward repo to reward history domain
 func (history RewardHistory) ToDomain() reward.DomainHistory {
 	return reward.DomainHistory{
 		ID: history.ID,
@@ -22,7 +24,7 @@ func (history RewardHistory) ToDomain() reward.DomainHistory {
 	}
 }
 
-
+// ToDomain convert reward repo to reward domain
 func (r Reward) ToDomain() reward.Domain {
 	return reward.Domain{
 		ID: r.ID,
@@ -31,6 +33,7 @@ func (r Reward) ToDomain() reward.Domain {
 	}
 }
 
+// FromDomainReward convert domain reward to reward repo
 func FromDomainReward(domain reward.Domain) *Reward {
 	return &Reward{
 		ID: domain.ID,

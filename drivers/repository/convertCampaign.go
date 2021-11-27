@@ -2,6 +2,7 @@ package repoModels
 
 import "github.com/stevenfrst/crowdfunding-api/usecase/campaign"
 
+// FromDomainCampaign convert campaign repo model to campaign domain
 func FromDomainCampaign(domain *campaign.Domain) *Campaign {
 	return &Campaign {
 		ID:domain.ID,
@@ -15,6 +16,7 @@ func FromDomainCampaign(domain *campaign.Domain) *Campaign {
 	}
 }
 
+// ToDomain convert campaign repo to campaign domain
 func (c Campaign) ToDomain() campaign.Domain {
 	return campaign.Domain{
 		ID:c.ID,

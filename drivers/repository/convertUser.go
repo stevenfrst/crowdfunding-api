@@ -5,6 +5,7 @@ import (
 	"github.com/stevenfrst/crowdfunding-api/usecase/users"
 )
 
+// ConvertRepoUseCaseUserList convert repo user list to domain user list
 func ConvertRepoUseCaseUserList(repo []User) (domain []users.Domain) {
 	for _,user := range repo {
 		newdomain := users.Domain{
@@ -20,6 +21,8 @@ func ConvertRepoUseCaseUserList(repo []User) (domain []users.Domain) {
 	return domain
 }
 
+
+// ConvertRepoUseCaseUserCampaign list of user repo to domain
 func ConvertRepoUseCaseUserCampaign(repo []User) (domain []campaign.Users) {
 	for _,x := range repo {
 		newDomain := campaign.Users{
@@ -36,7 +39,7 @@ func ConvertRepoUseCaseUserCampaign(repo []User) (domain []campaign.Users) {
 	return domain
 }
 
-
+// ConvertRepoUserCampaign convert user repo to domain campaign user
 func ConvertRepoUserCampaign(repo User) (domain campaign.UserCampaign) {
 	return campaign.UserCampaign{
 		ID:repo.ID,
@@ -50,7 +53,7 @@ func ConvertRepoUserCampaign(repo User) (domain campaign.UserCampaign) {
 	}
 }
 
-
+// FromDomainUser convert user domain to user repo
 func FromDomainUser(domain *users.Domain) *User {
 	return &User {
 		ID:      domain.ID,
@@ -62,6 +65,7 @@ func FromDomainUser(domain *users.Domain) *User {
 	}
 }
 
+// ToDomain convert user repo to user domain
 func (u User) ToDomain() users.Domain {
 	return users.Domain{
 		ID:      u.ID,
@@ -74,6 +78,7 @@ func (u User) ToDomain() users.Domain {
 	}
 }
 
+// ToDomainUserTransaction convert user repo to user domain transaction
 func (u *User) ToDomainUserTransaction() users.DomainTransaction {
 	var transaction []TransactionUser
 	for _,domain := range u.Transaction {
@@ -102,7 +107,7 @@ func (u *User) ToDomainUserTransaction() users.DomainTransaction {
 }
 
 
-
+// ToDomainList convert user repo to user domain
 func (u User) ToDomainList() users.Domain {
 	return users.Domain{
 		ID:      u.ID,

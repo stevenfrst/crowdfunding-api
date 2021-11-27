@@ -25,7 +25,7 @@ type Configuration struct {
 
 func GetConfig() Configuration {
 	conf := Configuration{}
-	err := gonfig.GetConf("app/config/config.json",&conf)
+	err := gonfig.GetConf("./app/config/config.json",&conf)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -34,7 +34,7 @@ func GetConfig() Configuration {
 
 func GetConfigTest() Configuration {
 	conf := Configuration{}
-	err := gonfig.GetConf("../../app/config/config.json",&conf)
+	err := gonfig.GetConf("./../../app/config/config.json",&conf)
 	if err != nil {
 		log.Fatalln(err)
 	}

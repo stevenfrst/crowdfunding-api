@@ -19,6 +19,7 @@ COPY . .
 
 # Build the application
 RUN  go build -o main .
+RUN cp /build/config.json .
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
@@ -29,7 +30,7 @@ RUN cp /build/main .
 # Build a small image
 FROM scratch
 
-COPY --from=builder /dist/main /
+COPY --from=builder /dist/* /
 
 # Command to run
 ENTRYPOINT ["./main"]

@@ -22,14 +22,14 @@ jobs:
         with:
           go-version: 1.17
       - name: create test file
-      env:
-        CONFIG_FILE: ${{ secrets.CONFIGJSON }}
-      run: |
-        touch ./config.json
-        echo "CONFIG_FILE" >> ./config.json
-        cat ./config.json
-        ls -a .
-      shell: bash
+        env:
+          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
+        run: |
+          touch ./config.json
+          echo "CONFIG_FILE" >> ./config.json
+          cat ./config.json
+          ls -a .
+        shell: bash
       - name: Running unit test
         run: go test ./... -cover
 

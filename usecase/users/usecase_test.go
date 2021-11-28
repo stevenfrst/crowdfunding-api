@@ -17,6 +17,8 @@ var userRepositoryMock _mockUserRepository.UserRepoInterface
 var userUsecase users.UserUsecaseInterface
 var dataUser  users.Domain
 var dataUsers []users.Domain
+const emailTo = "stevenhumam69@gmail.com"
+const pointerUser = "*users.Domain"
 
 func setup() {
 	config := config2.GetConfigTest()
@@ -28,7 +30,7 @@ func setup() {
 	dataUser = users.Domain{
 		ID:5,
 		FullName:"kafka",
-		Email:"stevenhumam69@gmail.com",
+		Email:emailTo,
 		Password:"$2a$04$8T1.pXn3uEXzS3how4kokOhHMuPGl8aQhaT4qtsG8U.qmqAH5OEjy",
 		Job:"serabutan",
 		RoleID:2,
@@ -41,7 +43,7 @@ func TestRegisterUser(t *testing.T) {
 	setup()
 	t.Run("Success Registering User", func(t *testing.T) {
 		userRepositoryMock.On("Register",
-			mock.AnythingOfType("*users.Domain"),
+			mock.AnythingOfType(pointerUser),
 			).Return(dataUser,nil).Once()
 		resp,err := userUsecase.RegisterUseCase(dataUser)
 		assert.Nil(t, err)
@@ -50,7 +52,7 @@ func TestRegisterUser(t *testing.T) {
 
 	t.Run("Fail Registering User", func(t *testing.T) {
 		userRepositoryMock.On("Register",
-			mock.AnythingOfType("*users.Domain"),
+			mock.AnythingOfType(pointerUser),
 		).Return(users.Domain{},errors.New("failed to create record")).Once()
 		resp,err := userUsecase.RegisterUseCase(dataUser)
 		assert.Error(t, err)
@@ -60,7 +62,7 @@ func TestRegisterUser(t *testing.T) {
 
 	t.Run("Fail Registering User case db error", func(t *testing.T) {
 		userRepositoryMock.On("Register",
-			mock.AnythingOfType("*users.Domain"),
+			mock.AnythingOfType(pointerUser),
 		).Return(users.Domain{},errors.New("db err")).Once()
 		resp,err := userUsecase.RegisterUseCase(dataUser)
 		assert.Error(t, err)
@@ -77,7 +79,7 @@ func TestLoginUseCase(t *testing.T) {
 				mock.AnythingOfType("string"),
 				mock.AnythingOfType("string"),
 		).Return(dataUser,nil).Once()
-	user, err := userUsecase.LoginUseCase("stevenhumam69@gmail.com","johnlennon")
+	user, err := userUsecase.LoginUseCase(emailTo,"johnlennon")
 	assert.Nil(t, err)
 	assert.Equal(t, "kafka",user.FullName)
 	})
@@ -87,7 +89,7 @@ func TestLoginUseCase(t *testing.T) {
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("string"),
 		).Return(users.Domain{},nil).Once()
-		user, err := userUsecase.LoginUseCase("stevenhumam69@gmail.com","johnlennon")
+		user, err := userUsecase.LoginUseCase(emailTo,"johnlennon")
 		assert.Error(t, err)
 		assert.Equal(t, users.Domain{},user)
 	})
@@ -97,7 +99,7 @@ func TestLoginUseCase(t *testing.T) {
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("string"),
 		).Return(users.Domain{},errors.New("internal error")).Once()
-		user, err := userUsecase.LoginUseCase("stevenhumam69@gmail.com","johnlennon")
+		user, err := userUsecase.LoginUseCase(emailTo,"johnlennon")
 		assert.Error(t, err)
 		assert.Equal(t, users.Domain{},user)
 	})

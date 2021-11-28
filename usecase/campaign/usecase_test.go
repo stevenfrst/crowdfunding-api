@@ -15,15 +15,16 @@ var campaignUseCase campaign.CampaignUsecaseInterface
 var dataCampaign  campaign.Domain
 var dataUser []campaign.Users
 var singleDataUser campaign.UserCampaign
+const campaignNameTest = "Test Campaigns"
 
 func setup() {
 	campaignUseCase = campaign.NewCampaignUseCase(&campaignMockRepo)
 	dataCampaign = campaign.Domain{
 		ID: 1,
 		UserID: 3,
-		CampaignName: "tahu bulat digoreng",
-		ShortDescription :"di mobil enak",
-		LongDescription :"500 ratusan mauuuu",
+		CampaignName: campaignNameTest,
+		ShortDescription :"Short description test",
+		LongDescription :"long description test",
 		Target:100000,
 		AmountNow :650000,
 		Supporters :8,
@@ -87,7 +88,7 @@ func TestRegisterUseCase(t *testing.T) {
 		}
 		resp,err := campaignUseCase.RegisterUseCase(&datamock)
 		assert.Nil(t, err)
-		assert.Equal(t, "tahu bulat digoreng",resp.CampaignName)
+		assert.Equal(t, campaignNameTest,resp.CampaignName)
 	})
 
 	t.Run("Error Register", func(t *testing.T) {
@@ -136,7 +137,7 @@ func TestGetByIDUseCase(t *testing.T) {
 			mock.AnythingOfType("int")).Return(dataCampaign,nil).Once()
 		resp,err := campaignUseCase.GetByIDUseCase(int(dataCampaign.ID))
 		assert.Nil(t, err)
-		assert.Equal(t, "tahu bulat digoreng",resp.CampaignName)
+		assert.Equal(t, campaignNameTest,resp.CampaignName)
 	})
 
 	t.Run("fail to get data via id", func(t *testing.T){

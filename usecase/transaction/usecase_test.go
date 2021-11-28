@@ -31,6 +31,7 @@ var dialer *gomail.Dialer
 var transactionDummy transaction.Domain
 var sampleSnap snap.Response
 var dataCampaign  campaign.Domain
+const pointerTransaction = "*transaction.Domain"
 
 
 func setup() {
@@ -90,7 +91,7 @@ func TestCreateTransaction(t *testing.T) {
 			mock.AnythingOfType("int"),
 			mock.AnythingOfType("int")).Return(&sampleSnap).Once()
 		transactionRepoMock.On("CreateTransaction",
-			mock.AnythingOfType("*transaction.Domain"),
+			mock.AnythingOfType(pointerTransaction),
 			).Return(transactionDummy,nil).Once()
 		resp,err := transactionUsecase.CreateTransaction(1,1,10000)
 		assert.Nil(t, err)
@@ -101,7 +102,7 @@ func TestCreateTransaction(t *testing.T) {
 			mock.AnythingOfType("int"),
 			mock.AnythingOfType("int")).Return(&sampleSnap).Once()
 		transactionRepoMock.On("CreateTransaction",
-			mock.AnythingOfType("*transaction.Domain"),
+			mock.AnythingOfType(pointerTransaction),
 		).Return(transaction.Domain{},errors.New("Gagal Membuat Transaksi")).Once()
 		resp,err := transactionUsecase.CreateTransaction(1,1,10000)
 		assert.Error(t, err)
@@ -148,7 +149,7 @@ func TestGetNotificationPayment(t *testing.T) {
 		transactionDummy.PaymentType = domainNotificationDummy.PaymentType
 		transactionDummy.TransactionStatus = domainNotificationDummy.TransactionStatus
 		transactionDummy.FraudStatus = domainNotificationDummy.FraudStatus
-		transactionRepoMock.On("UpdateTransaction",mock.AnythingOfType("*transaction.Domain")).
+		transactionRepoMock.On("UpdateTransaction",mock.AnythingOfType(pointerTransaction)).
 			Return(&transactionDummy,nil).Once()
 		campaignMockRepo.On("FindByID",mock.AnythingOfType("int")).
 			Return(dataCampaign,nil).Once()

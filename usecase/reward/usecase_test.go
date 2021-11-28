@@ -13,6 +13,7 @@ var rewardMockRepo mocks.RewardRepoInterface
 var rewardUsecase reward.RewardUsecaseInterface
 var dataDummy reward.Domain
 var dataHistoryDummy reward.DomainHistory
+const rewardType = "reward.Domain"
 
 func setup() {
 	rewardUsecase = reward.NewUsecase(&rewardMockRepo)
@@ -27,14 +28,14 @@ func setup() {
 func TestUpdateReward(t *testing.T) {
 	setup()
 	t.Run("Success Update Reward", func(t *testing.T) {
-		rewardMockRepo.On("UpdateReward",mock.AnythingOfType("reward.Domain")).
+		rewardMockRepo.On("UpdateReward",mock.AnythingOfType(rewardType)).
 			Return(dataDummy,nil).Once()
 		resp,err := rewardUsecase.UpdateReward(dataDummy)
 		assert.Nil(t, err)
 		assert.Equal(t, dataDummy.ID,resp.ID)
 	})
 	t.Run("Failed Update Reward", func(t *testing.T) {
-		rewardMockRepo.On("UpdateReward",mock.AnythingOfType("reward.Domain")).
+		rewardMockRepo.On("UpdateReward",mock.AnythingOfType(rewardType)).
 			Return(reward.Domain{},errors.New("Data Tidak Ditemukan/Gagal Mengupdate/Error Internal")).Once()
 		resp,err := rewardUsecase.UpdateReward(dataDummy)
 		assert.Error(t, err)
@@ -64,7 +65,7 @@ func TestDeleteRewardByID(t *testing.T) {
 func TestCreateReward(t *testing.T) {
 	setup()
 	t.Run("Success Create Reward", func(t *testing.T) {
-		rewardMockRepo.On("CreateReward",mock.AnythingOfType("reward.Domain")).
+		rewardMockRepo.On("CreateReward",mock.AnythingOfType(rewardType)).
 			Return(dataDummy,nil).Once()
 		resp,err := rewardUsecase.CreateReward(dataDummy)
 		assert.Nil(t, err)
@@ -72,7 +73,7 @@ func TestCreateReward(t *testing.T) {
 	})
 
 	t.Run("Success Create Reward", func(t *testing.T) {
-		rewardMockRepo.On("CreateReward",mock.AnythingOfType("reward.Domain")).
+		rewardMockRepo.On("CreateReward",mock.AnythingOfType(rewardType)).
 			Return(dataDummy,nil).Once()
 		resp,err := rewardUsecase.CreateReward(dataDummy)
 		assert.Nil(t, err)
@@ -80,7 +81,7 @@ func TestCreateReward(t *testing.T) {
 	})
 
 	t.Run("Failed Create Reward", func(t *testing.T) {
-		rewardMockRepo.On("CreateReward",mock.AnythingOfType("reward.Domain")).
+		rewardMockRepo.On("CreateReward",mock.AnythingOfType(rewardType)).
 			Return(reward.Domain{},errors.New("")).Once()
 		resp,err := rewardUsecase.CreateReward(dataDummy)
 		assert.Error(t, err)

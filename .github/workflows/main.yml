@@ -51,11 +51,11 @@ jobs:
         shell: bash
       - name: build docker
         run: docker build -t stevenfrst/go-crowdfund .
-      - name: login to docker hub
+      - name: login dockerhub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: push the previously built image to registry
         run: docker push stevenfrst/go-crowdfund
 

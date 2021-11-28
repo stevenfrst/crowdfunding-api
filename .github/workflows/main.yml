@@ -59,3 +59,20 @@ jobs:
       - name: push the previously built image to registry
         run: docker push stevenfrst/go-crowdfund
 
+# deploy ke swarm
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/crowdfunding-api/
+            git checkout main
+            pwd
+            git pull origin main
+            docker stack deploy -c docker-compose.yml app

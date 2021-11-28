@@ -26,7 +26,7 @@ jobs:
           CONFIG_FILE: ${{ secrets.CONFIGJSON }}
         run: |
           touch ./config.json
-          echo "CONFIG_FILE" >> ./config.json
+          echo "$CONFIG_FILE" >> ./config.json
           cat ./config.json
           ls -a .
         shell: bash

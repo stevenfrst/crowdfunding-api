@@ -32,5 +32,8 @@ FROM scratch
 
 COPY --from=builder /dist/* /
 
+ENV JAEGER_AGENT_HOST=jaeger
+ENV JAEGER_AGENT_PORT=6831
+
 # command to run with jaeger
-ENTRYPOINT ["JAEGER_AGENT_HOST=jaeger JAEGER_AGENT_PORT=6831 ./main"]
+ENTRYPOINT ["./main"]

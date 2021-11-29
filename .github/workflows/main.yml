@@ -60,7 +60,7 @@ jobs:
         run: docker push stevenfrst/go-crowdfund
 
 # deploy ke swarm
-  build:
+  deploy-to-swarm:
     runs-on: ubuntu-latest
     needs: build-push-docker
     steps:

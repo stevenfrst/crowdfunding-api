@@ -76,4 +76,4 @@ jobs:
             git checkout main
             pwd
             git pull origin main
-            docker stack deploy -c docker-compose.yml app
+            docker stack deploy -c docker-compose.yml api

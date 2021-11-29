@@ -29,7 +29,7 @@ RUN cp /build/config.json .
 RUN cat /build/config.json
 
 # Build a small image
-FROM scratch
+FROM alpine
 
 COPY --from=builder /dist/* /
 

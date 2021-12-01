@@ -150,6 +150,20 @@ func TestDeleteByID(t *testing.T) {
 		assert.Error(t, err)
 		assert.Equal(t, resp,"Failed")
 	})
+}
 
-
+func TestUpdatePassword(t *testing.T) {
+	setup()
+	t.Run("Success update", func(t *testing.T){
+		userRepositoryMock.On("UpdateUserPassword",
+			mock.AnythingOfType("users.DomainUpdate")).Return("success",nil).Once()
+	domain := users.DomainUpdate{
+		Email:       "stevenhumam69@gmail.com",
+		OldPassword: "kafka12345",
+		NewPassword: "hahahihi1234",
+	}
+	resp,err := userUsecase.UpdatePassword(domain)
+	assert.Nil(t, err)
+	assert.Equal(t, "success",resp)
+	})
 }

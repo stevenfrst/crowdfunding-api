@@ -100,7 +100,6 @@ func main() {
 		CONFIG_SENDER_NAME: config.CONFIG_SENDER_NAME,
 	}
 	dialer := email.NewGmailConfig(gmail)
-	//err := gmail.SendEmail()
 
 	configPayment.SetupGlobalMidtransConfig()
 	payment.InitializeSnapClient()

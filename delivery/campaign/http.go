@@ -49,13 +49,11 @@ func (u CampaignDelivery) GetCampaignByID(c echo.Context) (err error) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,err.Error(),err)
+		return delivery.ErrorResponse(c,http.StatusBadRequest,err.Error(),err)
 	}
 	resp, err := u.usecase.GetByIDUseCase(id)
 	if err != nil {
-		//return echo.NewHTTPError(http.StatusInternalServerError,err)
-		//log.Println(err)
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,err.Error(),err)
+		return delivery.ErrorResponse(c,http.StatusBadRequest,err.Error(),err)
 	}
 
 	return delivery.SuccessResponse(c,response.FromDomainCampaign(resp))

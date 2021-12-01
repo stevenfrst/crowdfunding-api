@@ -35,6 +35,7 @@ func (c CampaignRepository) CreateCampaign(campaignIn *campaign.Domain) (campaig
 	campaignIn.ID = uint(c.GetLast())
 	return *campaignIn,nil
 }
+
 // FindOneCampaignByID methods to get 1 campaign by id
 func (c CampaignRepository) FindOneCampaignByID(id int) (campaign.Domain,error) {
 	var campaign repoModels.Campaign

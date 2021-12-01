@@ -44,8 +44,7 @@ func (d *UserDelivery) Register(c echo.Context) (err error) {
 			return delivery.ErrorResponse(c,http.StatusInternalServerError,errorHelper.ERROR_INTERNAL,err)
 		}
 	}
-
-	return delivery.SuccessResponse(c,out)
+	return delivery.SuccessResponse(c,response.FromDomain(out))
 }
 
 // Login handler to handle login from user

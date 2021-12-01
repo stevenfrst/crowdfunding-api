@@ -48,6 +48,7 @@ func (t TransactionUseCase) CreateTransaction(campaignID,userID,Nominal int) (Do
 	transaction.PaymentLink = resp.RedirectURL
 	transaction.Nominal = Nominal
 	transaction.ID = uint(id)
+	transaction.TransactionStatus = "Pending"
 	transactionReturned,err := t.repoTransaction.CreateTransaction(&transaction)
 	if err != nil {
 		return Domain{},errors.New("Gagal Membuat Transaksi/Internal Error")

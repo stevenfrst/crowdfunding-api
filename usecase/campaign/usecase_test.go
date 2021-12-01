@@ -148,3 +148,24 @@ func TestGetByIDUseCase(t *testing.T) {
 		assert.Equal(t, resp,campaign.Domain{})
 	})
 }
+
+
+func TestEditTargetCampaign(t *testing.T) {
+	setup()
+	t.Run("Success Edit", func(t *testing.T) {
+		campaignMockRepo.On("EditTargetCampaign",
+			mock.AnythingOfType("int"),
+			mock.AnythingOfType("int")).Return(dataCampaign,nil).Once()
+		resp,err := campaignUseCase.EditTargetCampaign(1,100000)
+		assert.Nil(t, err)
+		assert.Equal(t, dataCampaign.ID,resp.ID)
+	})
+	t.Run("Fail Edit", func(t *testing.T) {
+		campaignMockRepo.On("EditTargetCampaign",
+			mock.AnythingOfType("int"),
+			mock.AnythingOfType("int")).Return(campaign.Domain{},errors.New("error")).Once()
+		resp,err := campaignUseCase.EditTargetCampaign(1,100000)
+		assert.Error(t, err)
+		assert.Equal(t, campaign.Domain{},resp)
+	})
+}

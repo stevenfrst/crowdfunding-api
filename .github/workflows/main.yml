@@ -21,15 +21,15 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-#      - name: create test file
-#        env:
-#          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
-#        run: |
-#          touch ./config.json
-#          echo "$CONFIG_FILE" >> ./config.json
-#          cat ./config.json
-#          ls -a .
-#        shell: bash
+      - name: create test file
+        env:
+          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
+        run: |
+          touch ./config.json
+          echo "$CONFIG_FILE" >> ./config.json
+          cat ./config.json
+          ls -a .
+        shell: bash
       - name: Running unit test
         run: go test ./... -cover
 
@@ -40,15 +40,15 @@ jobs:
     needs: unit-test
     steps:
       - uses: actions/checkout@v2
-#      - name: create test file
-#        env:
-#          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
-#        run: |
-#          touch ./config.json
-#          echo "$CONFIG_FILE" >> ./config.json
-#          cat ./config.json
-#          ls -a .
-#        shell: bash
+      - name: create test file
+        env:
+          CONFIG_FILE: ${{ secrets.CONFIGJSON }}
+        run: |
+          touch ./config.json
+          echo "$CONFIG_FILE" >> ./config.json
+          cat ./config.json
+          ls -a .
+        shell: bash
       - name: build docker
         run: docker build -t stevenfrst/go-crowdfund .
       - name: login dockerhub

@@ -37,7 +37,7 @@ func (u CampaignDelivery) CreateCampaignHandler(c echo.Context) (err error) {
 	//log.Println(out)
 	if err != nil {
 		//return echo.NewHTTPError(http.StatusInternalServerError,err)
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,err.Error(),err)
+		return delivery.ErrorResponse(c,http.StatusBadRequest,err.Error(),err)
 	}
 
 
@@ -70,7 +70,7 @@ func (u CampaignDelivery) GetAllCampaignDetail(c echo.Context) (err error) {
 	if err != nil {
 		//return echo.NewHTTPError(http.StatusInternalServerError,err)
 		//log.Println(err)
-		return delivery.ErrorResponse(c,http.StatusInternalServerError,err.Error(),err)
+		return delivery.ErrorResponse(c,http.StatusBadRequest,err.Error(),err)
 	}
 	log.Println(reflect.TypeOf(resp))
 	return delivery.SuccessResponse(c,response.FromDomainCampaignUserAll(resp))

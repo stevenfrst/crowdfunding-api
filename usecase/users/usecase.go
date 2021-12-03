@@ -24,7 +24,6 @@ func NewUsecase(userRepo UserRepoInterface,configJWT *_middleware.ConfigJWT, con
 
 // LoginUseCase method handle login
 func (u UserUseCase) LoginUseCase(username,password string) (Domain,error) {
-
 	user ,err := u.repo.CheckLogin(username,password)
 	if err != nil {
 		return user,errors.New("internal error")

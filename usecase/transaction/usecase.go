@@ -100,15 +100,9 @@ func (t TransactionUseCase) GetNotificationPayment(input DomainNotification) (Do
 		campaign.Supporters = campaign.Supporters + 1
 		campaign.AmountNow = campaign.AmountNow + updatedTransaction.Nominal
 		rewardId,rewards,_ := t.GetRewardByAmount(updatedTransaction.Nominal)
-		//if err != nil {
-		//	return Domain{},err
-		//}
-		//
+
 		userEmail,_ := t.repoUser.GetEmailByID(int(updatedTransaction.UserID))
-		//if err != nil {
-		//	return Domain{},err
-		//}
-		//log.Println(rewards,userEmail)
+
 		var newMail = Email{
 			Sender: "oppaidaisuki363@gmail.com",
 			ToEmail:userEmail,
